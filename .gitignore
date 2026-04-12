@@ -1,2 +1,12 @@
 __pycache__/
 .venv/
+
+# LaTeX temporary files
+*.aux
+*.log
+*.bbl
+*.blg
+*.fls
+
+# Generated PDF
+*.pdf

@@ -58,4 +58,10 @@ Select the `.venv` kernel and run the cells normally.
 
 ## Open in Colab
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fagundesariel/ML-Project/blob/main/Predictive_Model_Development_and_Evaluation.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fagundesariel/ML-Project/blob/main/notebooks/Predictive_Model_Development_and_Evaluation.ipynb)
+
+## Paper Compilation
+
+Instructions to compile the LaTeX paper are available at:
+
+reports/paper/README.md
