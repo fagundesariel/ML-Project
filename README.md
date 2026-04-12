@@ -1,5 +1,46 @@
 # ML-Project
-Repository dedicated to the development, training, and evaluation of predictive models based on Machine Learning techniques.
+
+Repository dedicated to the development, training, and evaluation of predictive models based on Machine Learning techniques for Chronic Kidney Disease prediction.
+
+---
+
+# Project Structure
+
+```text
+ML-Project/
+│
+├── README.md
+│
+├── data/
+│   ├── README.md
+│   ├── raw/
+│   │   └── kidney_disease.csv
+│   └── processed/
+│
+├── notebooks/
+│   └── Predictive_Model_Development_and_Evaluation.ipynb
+│
+├── reports/
+│   └── paper/
+│       ├── README.md
+│       ├── main.tex
+│       ├── references.bib
+│       ├── sbc-template.sty
+│       ├── sbc.bst
+│       │
+│       ├── figures/
+│       │   └── fig1.jpg
+│       │
+│       └── sections/
+│           ├── introduction.tex
+│           ├── methodology.tex
+│           ├── results.tex
+│           └── conclusion.tex
+│
+└── requirements.txt
+```
+
+---
 
 # Environment Setup
 
@@ -44,24 +85,126 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Run the notebook
+## 5. Configure notebook output stripping (required once)
 
-Open the project folder in VS Code and open the file:
+This project uses **nbstripout** to automatically remove notebook outputs and metadata before commits.
 
+This keeps commits small and prevents unnecessary notebook diffs.
+
+Install:
+
+```bash
+pip install nbstripout
 ```
-Predictive_Model_Development_and_Evaluation.ipynb
+
+Install the Git hook:
+
+```bash
+nbstripout --install
+```
+
+---
+
+## 6. Run the notebook
+
+Open the project folder in VS Code and open:
+
+```text
+notebooks/Predictive_Model_Development_and_Evaluation.ipynb
 ```
 
 Select the `.venv` kernel and run the cells normally.
 
 ---
 
-## Open in Colab
+# Open in Google Colab
+
+You can open the notebook directly in Google Colab:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fagundesariel/ML-Project/blob/main/notebooks/Predictive_Model_Development_and_Evaluation.ipynb)
 
-## Paper Compilation
+---
+
+# Notes for Contributors
+
+## Notebook usage
+
+* Notebook outputs are automatically removed using `nbstripout`
+* Always pull latest changes before editing notebooks
+
+## Recommended Workflow
+
+Typical workflow:
+
+1. Activate virtual environment
+2. Run notebooks
+3. Evaluate models
+4. Generate figures
+5. Save figures to:
+
+```text
+reports/paper/figures/
+```
+
+6. Update LaTeX sections
+7. Compile the paper
+
+---
+
+## Dataset
+
+The dataset used in this project is located at:
+
+```text
+data/raw/kidney_disease.csv
+```
+
+Processed datasets (if generated) should be stored in:
+
+```text
+data/processed/
+```
+
+Additional dataset details can be found in:
+
+```text
+data/README.md
+```
+
+---
+
+## Paper editing
+
+When working on the paper:
+
+Add figures to:
+
+```text
+reports/paper/figures/
+```
+
+Edit sections in:
+
+```text
+reports/paper/sections/
+```
+
+Update references in:
+
+```text
+reports/paper/references.bib
+```
+
+---
+
+# Paper Compilation
 
 Instructions to compile the LaTeX paper are available at:
 
+```text
 reports/paper/README.md
+```
+
+This paper uses the **SBC conference template**.
+
+---
