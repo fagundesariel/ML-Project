@@ -9,12 +9,17 @@ def perform_minimal_data_cleaning():
     
     print("Loading raw dataset...")
 
+    # Read the CSV file, skipping the first two rows which contain metadata
     df = pd.read_csv(
         RAW_DATA_PATH,
         header=0,
-        skiprows=[1, 2],
-        na_values=["?"]
+        skiprows=[1, 2]
     )
+
+    # Remove the row from the 'grf' column containing the value 'p',
+    # avoiding making assumptions about what 'p' represents in the context of the dataset,
+    # as it is unclear what 'p' stands for.
+    df = df[df['grf'].str.strip() != 'p']
 
     print("Saving interim dataset...")
 
