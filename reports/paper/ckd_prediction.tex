@@ -1,0 +1,73 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+
+%\newcommand{\todo}[1]{} % Uncomment this line to hide TODO notes
+\newcommand{\todo}[1]{\textcolor{red}{#1}} % TODO notes will be shown in red
+
+     
+\sloppy
+
+\title{Developing and Evaluating Predictive Models for Chronic Kidney Disease Detection}
+
+\author{Ariel M. Fagundes\inst{1}, Rodrigo\inst{1}, Anderson\inst{1} }
+
+\address{Instituto de Informática -- Universidade Federal do Rio Grande do Sul
+  (UFRGS)\\
+  Caixa Postal 15.064 -- 91.501-970 -- Porto Alegre -- RS -- Brazil
+  \email{\{ariel,rodrigo,anderson\}@inf.ufrgs.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+\todo{
+\begin{itemize}
+    \item Briefly introduce the problem being addressed and its practical relevance.
+    \item State the main objective of the study.
+    \item Summarize the dataset used and the general machine learning approach adopted.
+    \item Mention the main algorithms or techniques applied.
+    \item Present the most important results, including the best model performance using the primary evaluation metric.
+    \item Highlight the main contribution or insight obtained from the study.
+\end{itemize}
+}
+\end{abstract}
+     
+\begin{resumo}
+\todo{
+\begin{itemize}
+    \item Apresentar brevemente o problema abordado e sua relevância prática.
+    \item Definir o objetivo principal do estudo.
+    \item Resumir o conjunto de dados utilizado e a abordagem geral de aprendizado de máquina adotada.
+    \item Mencionar os principais algoritmos ou técnicas utilizadas.
+    \item Apresentar os resultados mais relevantes, incluindo o desempenho do melhor modelo utilizando a métrica principal.
+    \item Destacar a principal contribuição ou insight obtido com o estudo.
+\end{itemize}
+}
+\end{resumo}
+
+% ===== Sections =====
+
+\input{sections/introduction}
+
+\input{sections/methodology}
+
+\input{sections/results}
+
+\input{sections/conclusion}
+
+% ===== References =====
+\section{References}
+
+\cite{uci_ckd}
+
+\bibliographystyle{sbc}
+\bibliography{references}
+
+\end{document}
