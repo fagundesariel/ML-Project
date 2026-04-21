@@ -20,6 +20,7 @@ ML-Project/
 │   └── processed/
 │
 ├── notebooks/
+│   ├── EDA_Missing_Values_Analysis.ipynb
 │   ├── Predictive_Model_Development_and_Evaluation.ipynb
 │   └── Validate_Interim_Dataset.ipynb
 │
@@ -29,7 +30,7 @@ ML-Project/
 ├── reports/
 │   └── paper/
 │       ├── README.md
-│       ├── main.tex
+│       ├── ckd_prediction.tex
 │       ├── references.bib
 │       ├── sbc-template.sty
 │       ├── sbc.bst

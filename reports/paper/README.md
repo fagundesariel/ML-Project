@@ -8,7 +8,7 @@ This directory contains the LaTeX source files for the project paper using the S
 
 ```text
 paper/
-├── main.tex
+├── ckd_prediction.tex
 ├── sbc-template.sty
 ├── sbc.bst
 ├── references.bib
@@ -16,7 +16,7 @@ paper/
 └── sections/
 ```
 
-* `main.tex` — Main LaTeX document
+* `ckd_prediction.tex` — Main LaTeX document
 * `sections/` — Individual paper sections
 * `figures/` — Images generated from notebooks
 * `references.bib` — Bibliographic references
@@ -54,7 +54,7 @@ paper.zip
 5. Open:
 
 ```
-main.tex
+ckd_prediction.tex
 ```
 
 6. Click:
@@ -89,10 +89,10 @@ cd reports/paper
 Run:
 
 ```bash
-pdflatex main.tex
-bibtex main
-pdflatex main.tex
-pdflatex main.tex
+pdflatex ckd_prediction.tex
+bibtex ckd_prediction
+pdflatex ckd_prediction.tex
+pdflatex ckd_prediction.tex
 ```
 
 This generates:
@@ -118,7 +118,7 @@ figures/
 sections/
 ```
 
-and included in `main.tex` using:
+and included in `ckd_prediction.tex` using:
 
 ```latex
 \input{sections/section_name}
