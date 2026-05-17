@@ -10,3 +10,6 @@ __pycache__/
 
 # Generated PDF
 *.pdf
+
+# JetBrains IDE files
+.idea/
