@@ -92,22 +92,22 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Configure notebook output stripping (required once)
+## 5. Configure pre-commit hooks (required once)
 
-This project uses **nbstripout** to automatically remove notebook outputs and metadata before commits.
+This project uses **pre-commit** to manage Git hooks, including **nbstripout**, which automatically removes notebook outputs and metadata before commits.
 
 This keeps commits small and prevents unnecessary notebook diffs.
 
-Install:
+Install the hooks:
 
 ```bash
-pip install nbstripout
+pre-commit install
 ```
 
-Install the Git hook:
+To run all hooks manually against all files:
 
 ```bash
-nbstripout --install
+pre-commit run --all-files
 ```
 
 ---
@@ -136,7 +136,7 @@ You can open the notebook directly in Google Colab:
 
 ## Notebook usage
 
-* Notebook outputs are automatically removed using `nbstripout`
+* Notebook outputs are automatically removed via the `nbstripout` pre-commit hook
 * Always pull latest changes before editing notebooks
 
 ## Recommended Workflow
