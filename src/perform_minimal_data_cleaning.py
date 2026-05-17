@@ -6,7 +6,7 @@ INTERIM_DATA_PATH = Path("data/interim/kidney_disease_interim.csv")
 
 def perform_minimal_data_cleaning():
     """Load raw kidney disease data, clean it minimally, and save as interim dataset."""
-    
+
     print("Loading raw dataset...")
 
     # Read the CSV file, skipping the first two rows which contain metadata
@@ -20,6 +20,12 @@ def perform_minimal_data_cleaning():
     # avoiding making assumptions about what 'p' represents in the context of the dataset,
     # as it is unclear what 'p' stands for.
     df = df[df['grf'].str.strip() != 'p']
+
+    # Remove columns that represent data leakage:
+    # - 'affected': mirrors the target class (CKD diagnosis)
+    # - 'stage': carries post-diagnosis information
+    leakage_columns = ['affected', 'stage']
+    df = df.drop(columns=[col for col in leakage_columns if col in df.columns])
 
     print("Saving interim dataset...")
 
