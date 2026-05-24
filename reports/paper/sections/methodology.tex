@@ -1,7 +1,7 @@
 \section{Methodology}
 
-This study follows a machine learning pipeline composed of exploratory data analysis, 
-preprocessing, model training and validation, and interpretation of results. 
+This study follows a machine learning pipeline composed of exploratory data analysis,
+preprocessing, model training and validation, and interpretation of results.
 Each step is described in detail below.
 
 \subsection{Exploratory Data Analysis (EDA)}
@@ -84,15 +84,22 @@ Each step is described in detail below.
 
 \subsection{Model Interpretation and Analysis}
 
-\todo{
-\begin{itemize}
-    \item Describe the criteria used to select the model chosen for interpretation, typically based on predictive performance.
-    \item Present the interpretation methods or tools used to analyze the selected model.
-    \item Describe how feature relevance or importance was assessed.
-    \item Report the main relationships identified between input features and model predictions.
-    \item Present the visualizations or summaries used to support the interpretation results.
-    \item Discuss the most relevant findings obtained from the interpretation analysis.
-    \item Highlight relationships that were particularly meaningful or unexpected in the context of the problem.
-    \item Describe the insights or hypotheses derived from the interpretation process.
-\end{itemize}
-}
+After model selection, post-hoc explainability methods were applied to the
+selected CKD classifier. This interpretation stage was not used to train or
+select the model; instead, it was used to analyze the behavior of the selected
+model after the predictive modeling workflow had been completed. The
+explainability analysis combined model-specific feature importance, permutation
+feature importance, SHAP-based summaries, SHAP waterfall plots, and LIME local
+explanations \cite{fisher2019modelreliance,lundberg2017shap,ribeiro2016lime}.
+Because the selected classifier was a Random Forest model
+\cite{breiman2001randomforests}, native feature importance was also reported as
+a model-specific global explanation.
+
+Global explanations were used to identify features most associated with the
+model predictions across the test set, while local explanations were used to
+inspect representative individual predictions. SHAP values were interpreted
+with respect to the configured explained class, \texttt{ckd}; positive SHAP
+values indicate increased support for that class, whereas negative SHAP values
+indicate reduced support for that class. These explanations were treated as
+model-dependent interpretability evidence and not as causal clinical
+conclusions \cite{molnar2022interpretable,doshivelez2017interpretable}.

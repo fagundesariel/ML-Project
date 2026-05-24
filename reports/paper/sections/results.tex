@@ -28,3 +28,100 @@ Table~\ref{tab:missing_values} presents the missing value statistics for all col
 \label{tab:missing_values}
 \includegraphics[width=.3\textwidth]{figures/tab1.jpg}
 \end{table}
+
+\FloatBarrier
+
+\subsection{Explainability and Interpretation Results}
+
+The explainability analysis was applied to the previously selected Random
+Forest classifier. The goal of this stage was to interpret the selected model
+after model selection, not to introduce a new model-selection criterion. The
+analysis focused on the configured explained class \texttt{ckd}, so positive
+SHAP values indicate increased support for this class and negative SHAP values
+indicate reduced support for this class \cite{lundberg2017shap}.
+
+Global interpretation combined native Random Forest feature importance,
+permutation importance, and SHAP summaries. The resulting rankings highlighted
+hematological, renal-function, and urine-related variables as relevant features
+associated with model predictions. The features hemo, pcv, sg, grf, al, rbcc,
+htn, dm, and bgr appeared among the relevant variables, corresponding to
+hemoglobin, packed cell volume, specific gravity, glomerular filtration rate,
+albumin, red blood cell count, hypertension, diabetes mellitus, and blood
+glucose random. Figure~\ref{fig:global_feature_importance_comparison} compares
+the native feature-importance and permutation-importance views.
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/native_feature_importance.png}
+\caption{Model-specific feature importance.}
+\label{fig:explainability_native_importance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/permutation_importance.png}
+\caption{Permutation feature importance.}
+\label{fig:explainability_permutation_importance}
+\end{subfigure}
+\caption{Global feature-importance analysis for the selected Random Forest classifier.}
+\label{fig:global_feature_importance_comparison}
+\end{figure}
+
+\FloatBarrier
+
+SHAP summaries provided a complementary global interpretation of the selected
+classifier. Figure~\ref{fig:global_shap_explanations} reports the mean absolute
+SHAP values and the SHAP beeswarm summary for the explained class
+\texttt{ckd}. These SHAP values should be interpreted as model-dependent
+contributions to the model output, not as causal clinical effects
+\cite{doshivelez2017interpretable,lundberg2017shap}.
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/shap_global_bar.png}
+\caption{Mean absolute SHAP values.}
+\label{fig:explainability_shap_global_bar}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/shap_beeswarm.png}
+\caption{SHAP beeswarm summary.}
+\label{fig:explainability_shap_beeswarm}
+\end{subfigure}
+\caption{Global SHAP explanations for the configured explained class, \texttt{ckd}.}
+\label{fig:global_shap_explanations}
+\end{figure}
+
+\FloatBarrier
+
+Local explanations were generated for representative test instances using SHAP
+waterfall plots and LIME. The LIME outputs were exported as local HTML and CSV
+artifacts and used as complementary local explanations
+\cite{ribeiro2016lime}. Figure~\ref{fig:local_shap_waterfall_explanations}
+shows the local SHAP waterfall explanations included in the paper.
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}{0.46\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/shap_waterfall_instance_0.png}
+\caption{Representative instance.}
+\label{fig:explainability_shap_waterfall_instance_0}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.46\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/shap_waterfall_instance_4.png}
+\caption{Second representative instance.}
+\label{fig:explainability_shap_waterfall_instance_4}
+\end{subfigure}
+\caption{Local SHAP waterfall explanations for representative test instances.}
+\label{fig:local_shap_waterfall_explanations}
+\end{figure}
+
+\FloatBarrier
