@@ -1,8 +1,9 @@
+"""Shared helpers for building reproducible modeling pipelines."""
+
 from imblearn.pipeline import Pipeline
 from sklearn.base import clone
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler
-
 
 DEFAULT_RANDOM_STATE = 42
 
@@ -13,7 +14,7 @@ def make_stratified_cv(
     shuffle=True,
     random_state=DEFAULT_RANDOM_STATE,
 ):
-    """Return the repository-standard stratified CV splitter."""
+    """Return the repository-standard stratified cross-validation splitter."""
 
     return StratifiedKFold(
         n_splits=n_splits,
@@ -29,7 +30,7 @@ def make_nested_stratified_cv(
     shuffle=True,
     random_state=DEFAULT_RANDOM_STATE,
 ):
-    """Return the repository-standard outer and inner stratified CV splitters."""
+    """Return outer and inner stratified splitters for nested validation."""
 
     return (
         make_stratified_cv(
@@ -52,7 +53,7 @@ def make_modeling_pipeline(
     reducer=None,
     scaler=None,
 ):
-    """Build the shared preprocessing pipeline used across modeling notebooks."""
+    """Build the shared preprocessing and classification pipeline."""
 
     scaler_step = MinMaxScaler() if scaler is None else scaler
     steps = [("scaler", clone(scaler_step))]
