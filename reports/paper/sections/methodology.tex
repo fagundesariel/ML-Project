@@ -6,6 +6,29 @@ Each step is described in detail below.
 
 \subsection{Exploratory Data Analysis (EDA)}
 
+The dataset used is a widespread available dataset regarding Chronic Kidney Disease. It was downloaded from <ADD LINK HERE>.
+Data was initially composed of 200 instances, with 29 attributes each. It was found that two of those columns (Affected and Stage) were part of a previous ML study and could represent data Leakage, thus they were deleted. There was also one single instance where column GRF had a value "p" instad of a range. As it was a single instance and that value did not really made any sense, that intance was discarded.
+That left us with 199 Instances, and 27 attributes each. By checking a few instances manually, both Categorical and numerical values were found.
+By running some simple commands we've verified that our dataset was complete, i.e. there was no missing values we'd have to deal with.
+Our target variable is called "Class" which values could be CKD and NOTCKD, where CKD was indicating that the patient was diagnosed as having a Cronic Kidney Disease, and NOTCKD as patient not having it. There were 127 instances classified as CKD and 72 classified as NOTCKD, corresponding to an approximate 64\%–36\% class distribution. This level of imbalance is relatively moderate and is not expected to significantly affect model performance.
+Regarding the other attributes, we've splitted the analysis in two steps.
+\begin{itemize}
+    \item  Plotting the numerical value distributions for columns: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all columns show reasonable data distribution.
+    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical columns are actually ranges, thus in reality, the distinct values on the columns mean in fact numberical values within a range. This means that outlier values within each column does not exist, since all high values are represented as being bigger than a threshold. Another interesting fact is that the POT column has predominantly a single value, where 98.5\% of its values are "<7.31". This is a column that seems not to bring relevant information due to its distribution, and we should be intentional on its use.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/numeric_distributions_histograms.png}
+    \caption{Numeric attributes distribution}
+    \label{fig:numeric_distributions_histograms}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/categorical_distributions_barcharts.png}
+    \caption{Categorical attributes distribution}
+    \label{fig:categorical_distributions_barcharts}
+\end{figure}
+
 \todo{
 \begin{itemize}
     \item Describe the main characteristics of the dataset, including the number of instances, number
@@ -24,6 +47,17 @@ Each step is described in detail below.
 }
 
 \subsection{Data Preprocessing}
+
+As informed above, even before data exploration, two columns (Affected and Stage) were removed and one single instance was deleted.
+We've also took the decision of converting the categorical ranges into numerical values. Transforming range-based categories into numerical values is a
+good choice because it preserves the natural ordering and approximate magnitude of the original data, allowing machine learning algorithms to interpret
+the feature quantitatively rather than as unrelated text categories. This helps models identify meaningful patterns, relationships, and distances between
+values while avoiding the loss of ordinal information that would occur with purely categorical encoding methods such as one-hot encoding.
+So, for instance, the column POT, which distinct values were: "< 7.31", "7.31 - 11.72", "38.18 - 42.59" and ">= 42.59" were converted, respectively,
+into 7.31, 9.515, 40.385 and 42.59.
+The final column to be encoded was the target attribute: Class. CKD was converted to 1 and NOTCKD to 0.
+At this point, all columns were properly converted to numerical values, and are ready to be normalized. As methods like k-fold cross-validation are expected,
+we've did not normalized the data at this step, pre-processing was implemented into the modeling workflow within each iteration instead to allow proper normalization and avoid data leakage.
 
 \todo{
 \begin{itemize}
