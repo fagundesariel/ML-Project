@@ -39,20 +39,17 @@
     \item Highlight the main contribution or insight obtained from the study.
 \end{itemize}
 }
-\end{abstract}
 
-\begin{resumo}
-\todo{
-\begin{itemize}
-    \item Apresentar brevemente o problema abordado e sua relevância prática.
-    \item Definir o objetivo principal do estudo.
-    \item Resumir o conjunto de dados utilizado e a abordagem geral de aprendizado de máquina adotada.
-    \item Mencionar os principais algoritmos ou técnicas utilizadas.
-    \item Apresentar os resultados mais relevantes, incluindo o desempenho do melhor modelo utilizando a métrica principal.
-    \item Destacar a principal contribuição ou insight obtido com o estudo.
-\end{itemize}
-}
-\end{resumo}
+Chronic Kidney Disease (CKD) is a relevant public health problem in which early diagnosis may
+improve patient outcomes. This work evaluates machine learning models for CKD prediction using the
+UCI CKD dataset \cite{risk_factor_prediction_of_chronic_kidney_disease_857}. Random Forest, SVM,
+KNN, Naive Bayes, and Decision Tree were evaluated with balancing and dimensionality reduction
+techniques, including SMOTE, Random Under Sampling, SMOTE + Tomek Links, PCA, SelectKBest,
+SelectFromModel, and RFECV. Models were assessed using accuracy, precision, recall, and F1-score.
+Results showed that Random Forest achieved the best overall performance and that additional
+preprocessing techniques did not improve predictive performance for this dataset.
+
+\end{abstract}
 
 % ===== Sections =====
 
@@ -66,9 +63,6 @@
 
 % ===== References =====
 \section{References}
-
-\cite{uci_ckd}
-
 \bibliographystyle{sbc}
 \bibliography{references}
 
