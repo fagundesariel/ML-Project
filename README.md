@@ -39,6 +39,7 @@ ML-Project/
 │   ├── perform_minimal_data_cleaning.py
 │   ├── modeling_utils.py
 │   ├── modeling_workflow.py
+│   ├── visualization_utils.py
 │   └── explainability/
 │       ├── __init__.py
 │       ├── base_explainer.py
@@ -214,6 +215,7 @@ data/README.md
 | `src/perform_minimal_data_cleaning.py` | Generates the interim dataset from raw data |
 | `src/modeling_utils.py` | Shared utilities for model training and evaluation |
 | `src/modeling_workflow.py` | Orchestrates the modeling pipeline |
+| `src/visualization_utils.py` | Shared helpers for saving figures and tables from notebooks |
 | `src/explainability/` | Modular explainability framework (SHAP, permutation importance, etc.) |
 
 ---
