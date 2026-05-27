@@ -7,14 +7,21 @@ Each step is described in detail below.
 \subsection{Exploratory Data Analysis (EDA)}
 
 The dataset used is a widespread available dataset regarding Chronic Kidney Disease. It was downloaded from <ADD LINK HERE>.
-Data was initially composed of 200 instances, with 29 attributes each. It was found that two of those columns (Affected and Stage) were part of a previous ML study and could represent data Leakage, thus they were deleted. There was also one single instance where column GRF had a value "p" instad of a range. As it was a single instance and that value did not really made any sense, that intance was discarded.
+Data was initially composed of 200 instances, with 29 attributes each.
+Following the exploratory data analysis and preprocessing practices described by Faceli et al. \cite{faceli2011}, the dataset
+distributions, attribute consistency, and feature characteristics were then analyzed before model training.
+It was found that two of those columns (Affected and Stage) were part of a previous ML study and could represent data Leakage, thus they were deleted. There was also one single instance where column GRF had a value "p" instad of a range. As it was a single instance and that value did not really made any sense, that intance was discarded.
 That left us with 199 Instances, and 27 attributes each. By checking a few instances manually, both Categorical and numerical values were found.
 By running some simple commands we've verified that our dataset was complete, i.e. there was no missing values we'd have to deal with.
 Our target variable is called "Class" which values could be CKD and NOTCKD, where CKD was indicating that the patient was diagnosed as having a Cronic Kidney Disease, and NOTCKD as patient not having it. There were 127 instances classified as CKD and 72 classified as NOTCKD, corresponding to an approximate 64\%–36\% class distribution. This level of imbalance is relatively moderate and is not expected to significantly affect model performance.
 Regarding the other attributes, we've splitted the analysis in two steps.
 \begin{itemize}
     \item  Plotting the numerical value distributions for columns: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all columns show reasonable data distribution.
-    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical columns are actually ranges, thus in reality, the distinct values on the columns mean in fact numberical values within a range. This means that outlier values within each column does not exist, since all high values are represented as being bigger than a threshold. Another interesting fact is that the POT column has predominantly a single value, where 98.5\% of its values are "<7.31". This is a column that seems not to bring relevant information due to its distribution, and we should be intentional on its use.
+    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings 
+    can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical columns are actually ranges, thus in reality, the distinct values on the columns mean
+     in fact numberical values within a range. This means that outlier values within each column does not exist, since all high values are represented as being bigger than a threshold.
+      Another interesting fact is that the POT column has predominantly a single value, where 98.5\% of its values are "<7.31". This is a column that seems not to bring relevant information
+       due to its distribution, and we should be intentional on its use.
 \end{itemize}
 \begin{figure}
     \centering
