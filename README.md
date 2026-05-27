@@ -10,41 +10,71 @@ Repository dedicated to the development, training, and evaluation of predictive 
 ML-Project/
 │
 ├── README.md
+├── pyproject.toml
+├── requirements.txt
 │
 ├── data/
 │   ├── README.md
-│   ├── interim/
-│   │   └── kidney_disease_interim.csv
 │   ├── raw/
 │   │   └── kidney_disease.csv
+│   ├── interim/
+│   │   └── kidney_disease_interim.csv
 │   └── processed/
+│       └── kidney_disease_encoded.csv
 │
 ├── notebooks/
+│   ├── EDA_Feature_Distributions.ipynb
 │   ├── EDA_Missing_Values_Analysis.ipynb
-│   ├── Predictive_Model_Development_and_Evaluation.ipynb
-│   └── Validate_Interim_Dataset.ipynb
+│   ├── Encode_Categorical_Values.ipynb
+│   ├── Validate_Interim_Dataset.ipynb
+│   ├── Spot_Checking_ModelComparison.ipynb
+│   ├── Spot_Checking_Balancing.ipynb
+│   ├── Spot_Checking_DimensionalityReduction.ipynb
+│   ├── Optimize_RF_Hyperparameters.ipynb
+│   ├── Evaluate_RF_Balancing.ipynb
+│   ├── Evaluate_RF_DimensionalityReduction.ipynb
+│   └── Explainability_CKD_Selected_Model.ipynb
 │
 ├── src/
-│   └── perform_minimal_data_cleaning.py
+│   ├── perform_minimal_data_cleaning.py
+│   ├── modeling_utils.py
+│   ├── modeling_workflow.py
+│   └── explainability/
+│       ├── __init__.py
+│       ├── base_explainer.py
+│       ├── factory.py
+│       ├── reporting.py
+│       ├── run_explainability.py
+│       ├── visualizations.py
+│       └── explainers/
+│           ├── __init__.py
+│           ├── knn_explainer.py
+│           ├── linear_explainer.py
+│           ├── model_agnostic_explainer.py
+│           ├── svm_explainer.py
+│           └── tree_explainer.py
 │
-├── reports/
-│   └── paper/
-│       ├── README.md
-│       ├── ckd_prediction.tex
-│       ├── references.bib
-│       ├── sbc-template.sty
-│       ├── sbc.bst
-│       │
-│       ├── figures/
-│       │   └── fig1.jpg
-│       │
-│       └── sections/
-│           ├── introduction.tex
-│           ├── methodology.tex
-│           ├── results.tex
-│           └── conclusion.tex
+├── tests/
+│   ├── conftest.py
+│   ├── test_base_explainer.py
+│   ├── test_explainer_factory.py
+│   ├── test_knn_explainer.py
+│   ├── test_reporting.py
+│   └── test_visualizations.py
 │
-└── requirements.txt
+└── reports/
+    └── paper/
+        ├── README.md
+        ├── ckd_prediction.tex
+        ├── references.bib
+        ├── sbc-template.sty
+        ├── sbc.bst
+        ├── figures/
+        └── sections/
+            ├── introduction.tex
+            ├── methodology.tex
+            ├── results.tex
+            └── conclusion.tex
 ```
 
 ---
@@ -112,23 +142,20 @@ pre-commit run --all-files
 
 ---
 
-## 6. Run the notebook
+## 6. Run the notebooks
 
-Open the project folder in VS Code and open:
+Open the project folder in VS Code and navigate to the `notebooks/` directory. The notebooks are organized by stage:
 
-```text
-notebooks/Predictive_Model_Development_and_Evaluation.ipynb
-```
+| Stage | Notebook |
+|---|---|
+| EDA | `EDA_Feature_Distributions.ipynb`, `EDA_Missing_Values_Analysis.ipynb` |
+| Preprocessing | `Encode_Categorical_Values.ipynb`, `Validate_Interim_Dataset.ipynb` |
+| Spot-checking | `Spot_Checking_ModelComparison.ipynb`, `Spot_Checking_Balancing.ipynb`, `Spot_Checking_DimensionalityReduction.ipynb` |
+| Optimization | `Optimize_RF_Hyperparameters.ipynb` |
+| Evaluation | `Evaluate_RF_Balancing.ipynb`, `Evaluate_RF_DimensionalityReduction.ipynb` |
+| Explainability | `Explainability_CKD_Selected_Model.ipynb` |
 
 Select the `.venv` kernel and run the cells normally.
-
----
-
-# Open in Google Colab
-
-You can open the notebook directly in Google Colab:
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fagundesariel/ML-Project/blob/main/notebooks/Predictive_Model_Development_and_Evaluation.ipynb)
 
 ---
 
@@ -144,17 +171,11 @@ You can open the notebook directly in Google Colab:
 Typical workflow:
 
 1. Activate virtual environment
-2. Run notebooks
-3. Evaluate models
-4. Generate figures
-5. Save figures to:
-
-```text
-reports/paper/figures/
-```
-
-6. Update LaTeX sections
-7. Compile the paper
+2. Run data cleaning: `python src/perform_minimal_data_cleaning.py`
+3. Run notebooks in order (EDA -> Preprocessing -> Spot-checking -> Optimization -> Evaluation -> Explainability)
+4. Generate figures (saved automatically to `reports/paper/figures/`)
+5. Update LaTeX sections
+6. Compile the paper
 
 ---
 
@@ -166,22 +187,43 @@ The dataset used in this project is located at:
 data/raw/kidney_disease.csv
 ```
 
-Processed dataset should be stored in:
+The interim dataset (after minimal cleaning) is stored at:
 
 ```text
-data/processed/
+data/interim/kidney_disease_interim.csv
 ```
 
-Interim datasets generated by minimal cleaning should be stored in:
+The processed dataset (after encoding) is stored at:
 
 ```text
-data/interim/
+data/processed/kidney_disease_encoded.csv
 ```
 
 Additional dataset details can be found in:
 
 ```text
 data/README.md
+```
+
+---
+
+## Source modules
+
+| File | Purpose |
+|---|---|
+| `src/perform_minimal_data_cleaning.py` | Generates the interim dataset from raw data |
+| `src/modeling_utils.py` | Shared utilities for model training and evaluation |
+| `src/modeling_workflow.py` | Orchestrates the modeling pipeline |
+| `src/explainability/` | Modular explainability framework (SHAP, permutation importance, etc.) |
+
+---
+
+## Tests
+
+Unit tests are located in `tests/` and can be run with:
+
+```bash
+pytest
 ```
 
 ---
