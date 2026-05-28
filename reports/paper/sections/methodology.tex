@@ -17,7 +17,7 @@ Our target variable is called "Class" which values could be CKD and NOTCKD, wher
 Regarding the other attributes, we've splitted the analysis in two steps.
 \begin{itemize}
     \item  Plotting the numerical value distributions for columns: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all columns show reasonable data distribution.
-    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings 
+    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings
     can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical columns are actually ranges, thus in reality, the distinct values on the columns mean
      in fact numberical values within a range. This means that outlier values within each column does not exist, since all high values are represented as being bigger than a threshold.
       Another interesting fact is that the POT column has predominantly a single value, where 98.5\% of its values are "<7.31". This is a column that seems not to bring relevant information
@@ -143,4 +143,4 @@ with respect to the configured explained class, \texttt{ckd}; positive SHAP
 values indicate increased support for that class, whereas negative SHAP values
 indicate reduced support for that class. These explanations were treated as
 model-dependent interpretability evidence and not as causal clinical
-conclusions \cite{molnar2022interpretable,doshivelez2017interpretable}.
+conclusions \cite{molnar2025interpretable,doshivelez2017interpretable}.
