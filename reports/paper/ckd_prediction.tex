@@ -8,9 +8,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
-%\newcommand{\todo}[1]{} % Uncomment this line to hide TODO notes
-\newcommand{\todo}[1]{\textcolor{red}{#1}} % TODO notes will be shown in red
-
 
 \sloppy
 
@@ -29,16 +26,6 @@
 \maketitle
 
 \begin{abstract}
-\todo{
-\begin{itemize}
-    \item Briefly introduce the problem being addressed and its practical relevance.
-    \item State the main objective of the study.
-    \item Summarize the dataset used and the general machine learning approach adopted.
-    \item Mention the main algorithms or techniques applied.
-    \item Present the most important results, including the best model performance using the primary evaluation metric.
-    \item Highlight the main contribution or insight obtained from the study.
-\end{itemize}
-}
 
 Chronic Kidney Disease (CKD) is a relevant public health problem in which early diagnosis may
 improve patient outcomes. This work evaluates machine learning models for CKD prediction using the
@@ -46,7 +33,7 @@ UCI CKD dataset \cite{risk_factor_prediction_of_chronic_kidney_disease_857}. Ran
 KNN, Naive Bayes, and Decision Tree were evaluated with balancing and dimensionality reduction
 techniques, including SMOTE, Random Under Sampling, SMOTE + Tomek Links, PCA, SelectKBest,
 SelectFromModel, and RFECV. Models were assessed using accuracy, precision, recall, and F1-score.
-The best-performing models were further analyzed using explainability and interpretability techniques
+The best-performing model was further analyzed using explainability and interpretability techniques
 to provide insights into the decision-making process and feature importance for CKD prediction.
 
 \end{abstract}

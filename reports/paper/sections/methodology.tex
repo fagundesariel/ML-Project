@@ -6,21 +6,21 @@ Each step is described in detail below.
 
 \subsection{Exploratory Data Analysis (EDA)}
 
-The dataset used is a widespread available dataset regarding Chronic Kidney Disease. \cite{risk_factor_prediction_of_chronic_kidney_disease_857}.
-Data was initially composed of 200 instances, with 29 attributes each.
+The dataset used is a widespread available dataset regarding Chronic Kidney Disease \cite{risk_factor_prediction_of_chronic_kidney_disease_857}.
+Data was initially composed of 200 instances, with 29 attributes each (including the target variable).
 Following the exploratory data analysis and preprocessing practices described by Faceli et al. \cite{faceli2011}, the dataset
 distributions, attribute consistency, and feature characteristics were then analyzed before model training.
-It was found that two of those columns (Affected and Stage) were part of a previous ML study and could represent data Leakage, thus they were deleted. There was also one single instance where column GRF had a value "p" instad of a range. As it was a single instance and that value did not really made any sense, that intance was discarded.
-That left us with 199 Instances, and 27 attributes each. By checking a few instances manually, both Categorical and numerical values were found.
+It was found that two of those attributes ('affected' and 'stage') were part of a previous ML study and could represent data leakage, thus they were deleted. Specifically, the 'affected' attribute was a mirror of the target class and therefore represented data leakage. The 'stage' attribute was removed because it contains information posterior to the diagnosis, thus also representing data leakage. There was also one single instance where column 'grf' had a value "p" instead of a range. As it was a single instance and that value did not make any sense, that instance was discarded. This value "p" potentially represented a masked missing value.
+That left us with 199 Instances, and 27 attributes each (including the target variable). By checking a few instances manually, both Categorical and numerical values were found.
 By running some simple commands we've verified that our dataset was complete, i.e. there was no missing values we'd have to deal with.
 Our target variable is called "Class" which values could be CKD and NOTCKD, where CKD was indicating that the patient was diagnosed as having a Cronic Kidney Disease, and NOTCKD as patient not having it. There were 127 instances classified as CKD and 72 classified as NOTCKD, corresponding to an approximate 64\%–36\% class distribution. This level of imbalance is relatively moderate and is not expected to significantly affect model performance.
 Regarding the other attributes, we've splitted the analysis in two steps.
 \begin{itemize}
-    \item  Plotting the numerical value distributions for columns: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all columns show reasonable data distribution.
-    \item Plotting the Categorical value distributions for columns: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings
-    can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical columns are actually ranges, thus in reality, the distinct values on the columns mean
-     in fact numberical values within a range. This means that outlier values within each column does not exist, since all high values are represented as being bigger than a threshold.
-      Another interesting fact is that the POT column has predominantly a single value, where 98.5\% of its values are "<7.31". This is a column that seems not to bring relevant information
+    \item  Plotting the numerical value distributions for attributes: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all attributes show reasonable data distribution.
+    \item Plotting the Categorical value distributions for attributes: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings
+    can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical attributes are actually ranges, thus in reality, the distinct values on the attributes mean
+     in fact numerical values within a range. This means that outlier values within each attribute does not exist, since all high values are represented as being bigger than a threshold.
+      Another interesting fact is that the 'pot' attribute has predominantly a single value, where 98.5\% of its values are "$<$7.31 ". This is an attribute that seems not to bring relevant information
        due to its distribution, and we should be intentional on its use.
 \end{itemize}
 \begin{figure}
@@ -36,53 +36,20 @@ Regarding the other attributes, we've splitted the analysis in two steps.
     \label{fig:categorical_distributions_barcharts}
 \end{figure}
 
-\todo{
-\begin{itemize}
-    \item Describe the main characteristics of the dataset, including the number of instances, number
-        and types of attributes, and the definition of the target variable.
-    \item Present the distribution of the target attribute and discuss possible class imbalance issues.
-    \item Report the presence of patterns, anomalies, or inconsistencies observed in the dataset, such
-        as outliers, missing values, duplicated records, or irregular values.
-    \item Present visualizations and statistical summaries used to support the exploratory analysis
-        (e.g., histograms, boxplots, correlation matrices, descriptive statistics).
-    \item Discuss relationships between attributes and identify possible redundant or highly correlated features.
-    \item Highlight attributes or instances that were identified as potentially irrelevant, redundant, or problematic.
-    \item Summarize the main findings obtained from the exploratory analysis.
-    \item Based on these findings, describe the data quality issues identified and motivate the preprocessing steps
-        required for data preparation.
-\end{itemize}
-}
 
 \subsection{Data Preprocessing}
 
-As informed above, even before data exploration, two columns (Affected and Stage) were removed and one single instance was deleted.
+As informed above, even before data exploration, two attributes (Affected and Stage) were removed and one single instance was deleted.
 We've also took the decision of converting the categorical ranges into numerical values. Transforming range-based categories into numerical values is a
 good choice because it preserves the natural ordering and approximate magnitude of the original data, allowing machine learning algorithms to interpret
 the feature quantitatively rather than as unrelated text categories. This helps models identify meaningful patterns, relationships, and distances between
 values while avoiding the loss of ordinal information that would occur with purely categorical encoding methods such as one-hot encoding.
-So, for instance, the column POT, which distinct values were: "< 7.31", "7.31 - 11.72", "38.18 - 42.59" and ">= 42.59" were converted, respectively,
+So, for instance, the attribute 'pot', which distinct values were: "$<$ 7.31", "7.31 - 11.72", "38.18 - 42.59" and "$\geq$ 42.59" were converted, respectively,
 into 7.31, 9.515, 40.385 and 42.59.
-The final column to be encoded was the target attribute: Class. CKD was converted to 1 and NOTCKD to 0.
-At this point, all columns were properly converted to numerical values, and are ready to be normalized. As methods like k-fold cross-validation are expected,
+The final attribute to be encoded was the target attribute: Class. CKD was converted to 1 and NOTCKD to 0.
+At this point, all attributes were properly converted to numerical values, and are ready to be normalized. As methods like k-fold cross-validation are expected,
 we've did not normalized the data at this step, pre-processing was implemented into the modeling workflow within each iteration instead to allow proper normalization and avoid data leakage.
 
-\todo{
-\begin{itemize}
-    \item Describe the preprocessing steps applied to the dataset based on the issues identified during the
-        exploratory data analysis.
-    \item Explain the criteria used to remove or modify attributes or instances considered
-        irrelevant, redundant, or inconsistent.
-    \item Describe how missing values were handled and justify the chosen strategy.
-    \item Report how outliers were treated and explain the reasoning behind the adopted approach.
-    \item Describe any normalization or standardization procedures applied to numerical attributes.
-    \item Explain how categorical variables were encoded and justify the selected encoding method.
-    \item Describe any techniques used to address class imbalance, when applicable.
-    \item Report the use of dimensionality reduction or feature selection methods, if applied,
-        including the criteria used.
-    \item Explain how preprocessing steps were incorporated into the modeling workflow.
-    \item If no preprocessing was required, explicitly state this and justify the decision based on the data analysis.
-\end{itemize}
-}
 
 \subsection{Definition of the Approach, Algorithms, and Evaluation Strategy}
 
@@ -204,25 +171,6 @@ performance can be attributed to algorithmic choices rather than to variation in
 Together, these methodological choices are intended to maximize the reliability and
 reproducibility of the experimental results.
 
-\todo{
-\begin{itemize}
-    \item Describe the overall machine learning approach adopted to address the problem, including
-        the type of learning task (e.g., classification or regression).
-    \item Present the set of supervised learning algorithms selected for the study and justify their
-        inclusion based on their characteristics and suitability for the problem.
-    \item Highlight the diversity of the selected algorithms in terms of modeling strategies or inductive biases.
-    \item Describe the performance evaluation metrics used to assess model performance, explaining
-        their relevance to the problem context.
-    \item Indicate the primary metric used as the main criterion for model selection and optimization,
-        and justify this choice.
-    \item Describe the strategy used to divide the dataset into training, validation, and testing subsets.
-    \item Explain the evaluation methodology adopted (e.g., holdout validation or cross-validation),
-        including how it contributes to reliable model assessment.
-    \item Justify the methodological choices made in this stage based on best practices or characteristics
-        of the dataset and problem.
-\end{itemize}
-}
-
 
 \subsection{Model Training, Hyperparameter Tuning, and Validation}
 
@@ -243,21 +191,21 @@ Pipeline-based experimentation ensured that all preprocessing transformations we
   This procedure follows best practices recommended in the literature for avoiding optimistic bias in performance estimation \cite{kaufman2012leakage, scikit-learn}.
 
 Hyperparameter optimization was performed using both \texttt{GridSearchCV} and \texttt{RandomizedSearchCV}. Three search
-configurations were investigated: (i) a focused exhaustive grid search evaluating all parameter combinations, (ii) a broad randomized search exploring 
-wide hyperparameter distributions with 50 random samples, and (iii) a fine-tuned randomized search concentrating on narrower distributions around identified promising regions 
+configurations were investigated: (i) a focused exhaustive grid search evaluating all parameter combinations, (ii) a broad randomized search exploring
+wide hyperparameter distributions with 50 random samples, and (iii) a fine-tuned randomized search concentrating on narrower distributions around identified promising regions
 with 30 sampled configurations. The optimized hyperparameters included the number of trees ( \texttt{n\_estimators} ), maximum tree depth (\texttt{max\_depth}), minimum samples required for
 node splitting (\texttt{min\_samples\_split}), minimum samples per leaf ( \texttt{min\_samples\_leaf} ), and the number of features considered at each split (\texttt{max\_features}). The use
 of randomized search as an efficient alternative to exhaustive search for high-dimensional hyperparameter spaces has been previously demonstrated by Bergstra and Bengio \cite{bergstra2012random}.
 
 It was used an outer loop using a stratified 5-fold cross-validation scheme for performance estimation,
-  while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent 
+  while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent
   evaluation conditions for all configurations.
 
-To improve reproducibility and consistency, it was used a fixed random seed (\texttt{random\_state=42}), including Random Forest initialization, PCA transformations, 
+To improve reproducibility and consistency, it was used a fixed random seed (\texttt{random\_state=42}), including Random Forest initialization, PCA transformations,
 randomized hyperparameter searches, and cross-validation splitting.
 
-Model performance was systematically recorded using: Accuracy, Precision, Recall, and F1-score. For each configuration, performance statistics were 
-aggregated across outer folds and summarized using mean and standard deviation values Figure \ref{fig:optimize_rf_hyperparameters_ranking}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves 
+Model performance was systematically recorded using: Accuracy, Precision, Recall, and F1-score. For each configuration, performance statistics were
+aggregated across outer folds and summarized using mean and standard deviation values Figure \ref{fig:optimize_rf_hyperparameters_ranking}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves
 and distribution boxplots Figure \ref{fig:optimize_rf_hyperparameters_boxplot} illustrating fold-level performance consistency and ROC Figure \ref{fig:optimize_rf_hyperparameters_roc_curve}. All results
   were consolidated into structured summary tables to facilitate comparative analysis and support the final selection of the most robust Random Forest configuration.
 \begin{figure}
