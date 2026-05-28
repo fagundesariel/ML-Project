@@ -86,6 +86,124 @@ we've did not normalized the data at this step, pre-processing was implemented i
 
 \subsection{Definition of the Approach, Algorithms, and Evaluation Strategy}
 
+The problem addressed in this study is formulated as a binary supervised classification task, in
+which each instance must be assigned to one of two mutually exclusive categories: CKD (positive
+class) or NOTCKD (negative class). The dataset employed is the Risk Factor Prediction of Chronic
+Kidney Disease \cite{risk_factor_prediction_of_chronic_kidney_disease_857}, made available through
+the UCI Machine Learning Repository. Following the preprocessing steps described in the preceding
+section, the working dataset comprises 199 instances and 27 attributes, with a class distribution
+of approximately 63.8\% CKD cases and 36.2\% NOTCKD cases. Although this degree of imbalance is
+moderate and not expected to substantially compromise classification in general, it was treated as a
+methodological question in its own right: certain algorithms are known to be sensitive to class
+frequencies even at relatively mild imbalance ratios, and such sensitivity may interact with the
+choice of evaluation metric in non-trivial ways \cite{he2009imbalanced}. The potential influence of
+class distribution on model behaviour was therefore empirically assessed as an explicit experimental
+stage rather than assumed negligible a priori.
+
+All preprocessing and feature transformation steps were encapsulated within a unified
+\texttt{Pipeline} provided by Scikit-Learn \cite{pedregosa2011sklearn}. The pipeline structure
+enforced a strict separation between training and validation data throughout every
+cross-validation fold: the encoding of range-based categorical variables as midpoint numerical
+values, as well as the min-max normalization applied to all features, were fitted exclusively on
+the training partition of each fold and then applied to the corresponding validation partition.
+This design choice structurally prevents data leakage, as no information from validation instances
+is allowed to influence the transformation parameters \cite{faceli2011}. Reproducibility across
+all experiments was further ensured by fixing the \texttt{random\_state} seed in every stochastic
+component of the pipeline.
+
+Five supervised learning algorithms were selected to cover a deliberately broad and methodologically
+diverse range of inductive biases, learning strategies, and complexity profiles, following the
+taxonomy discussed by Faceli et al.~\cite{faceli2011}. Random Forest \cite{breiman2001randomforests}
+is an ensemble method that constructs multiple decision trees over bootstrap samples of the training
+data and aggregates their predictions through majority voting. Its robustness to noise, capacity to
+handle high-dimensional input spaces, and built-in mechanism for estimating feature importance make
+it a well-suited candidate for medical classification tasks \cite{deo2015}. Support Vector
+Machine \cite{cortesvapnik1995} identifies a maximum-margin separating hyperplane in a
+kernel-induced feature space; its strong theoretical foundations and demonstrated empirical
+effectiveness in binary classification scenarios motivate its inclusion. K-Nearest
+Neighbors \cite{cover1967nearest} adopts an instance-based, non-parametric inductive bias,
+assigning class labels according to the majority class among the $k$ most geometrically proximate
+training instances. Its sensitivity to local structures in the feature space provides a meaningful
+contrast to the global model-based approaches. Naive Bayes relies on the assumption of conditional
+feature independence given the class label, offering a probabilistic generative perspective that is
+both computationally efficient and intrinsically transparent \cite{faceli2011,mitchell1997}. Finally,
+the Decision Tree algorithm \cite{quinlan1986} constructs explicit, rule-based representations of the
+decision surface, combining strong interpretability with the capacity to capture non-linear feature
+interactions. Taken together, these five algorithms represent distinct families of learning
+hypotheses - ensemble, margin-based, distance-based, probabilistic, and rule-based - providing a
+principled basis for comparative evaluation across diverse modelling strategies.
+
+The experimental workflow was structured in six progressive stages, each designed to narrow the
+space of modeling decisions before a final configuration was committed. In the first stage, all
+five classifiers were evaluated under four class-resampling strategies: no resampling, SMOTE
+\cite{chawla2002smote}, Random Under-Sampling, and the combination of SMOTE with Tomek Links
+\cite{tomek1976}. Despite the dataset's moderate imbalance, this evaluation was performed to
+empirically verify whether any resampling strategy yielded consistent and meaningful performance
+improvements across the classifier portfolio \cite{he2009imbalanced}. The results indicated that
+gains from resampling were marginal and inconsistent across models, not warranting the additional
+complexity; the no-resampling configuration was therefore adopted as the baseline condition for all
+subsequent stages.
+
+In the second stage, four dimensionality reduction and feature selection strategies were applied to
+all classifiers under the no-resampling baseline: Principal Component Analysis (PCA),
+SelectKBest, SelectFromModel, and Recursive Feature Elimination with Cross-Validation (RFECV).
+PCA retaining 90\% of the cumulative explained variance achieved the best average performance
+across classifiers and was adopted as the reference configuration for the third stage. The third
+stage compared all five classifiers under the combined configuration of no resampling and PCA
+(90\% variance), with Random Forest consistently achieving the best performance and being selected
+for focused investigation in subsequent stages. Stages four and five revisited, specifically for
+Random Forest, the effects of resampling strategies and alternative dimensionality reduction
+configurations. These targeted reassessments confirmed that no resampling remained superior and further identified
+PCA retaining 95\% of the explained variance as the best-performing dimensionality reduction
+configuration for this particular model.
+
+In the sixth stage, hyperparameter optimization was conducted across both preprocessing variants
+identified in prior stages - the no-dimensionality-reduction baseline and PCA (95\% variance) -
+using GridSearchCV with a focused search grid and two variants of
+RandomizedSearchCV \cite{bergstrabengio2012}: one sampling broadly from wide parameter
+distributions and one refining the search around more promising regions. The combination of
+exhaustive and stochastic search strategies reflects a principled trade-off: grid search provides
+systematic coverage of well-defined parameter ranges, while random search is statistically more
+efficient when the parameter space is large and the regions of interest are not known a
+priori \cite{bergstrabengio2012}. All optimization experiments were evaluated within a Nested
+Cross-Validation framework \cite{cawley2010overfitting}, using macro-averaged F1-score as the
+optimization criterion. The outer loop provides a performance estimate decoupled from the inner
+model selection procedure, thereby mitigating the optimistic bias that arises when the same data
+partitions are used for both tuning and evaluation \cite{cawley2010overfitting}. The results
+indicated that, while configurations combining PCA (95\% variance) with tuned hyperparameters
+achieved the highest observed F1 scores, the performance difference relative to the
+no-dimensionality-reduction baseline with default parameters was marginal and insufficient to
+justify the computational overhead of applying PCA. Accordingly, the final model adopted was the
+baseline Random Forest with no resampling, no dimensionality reduction, and the default
+Scikit-Learn hyperparameters, prioritizing simplicity, reproducibility, and a lower risk of
+overfitting over negligible performance differences.
+
+Model performance was assessed using four complementary metrics: accuracy, precision, recall, and
+F1-score \cite{faceli2011}. In clinical classification contexts, accuracy alone is an insufficient
+indicator of model quality when the costs associated with different error types are asymmetric. A
+false negative outcome - in which a patient with CKD is predicted as healthy - may carry
+substantially more serious clinical consequences than a false positive \cite{obermeyer2016,deo2015}.
+Precision quantifies the proportion of positive predictions that are correct, whereas recall
+measures the fraction of actual positive cases that are correctly identified. F1-score, defined as
+the harmonic mean of precision and recall, provides a balanced aggregate that penalizes extreme
+trade-offs between the two quantities. All metrics were computed in macro-averaged form to ensure
+that both classes received equal weight in the evaluation, irrespective of their relative
+frequencies. For the same reasons, macro-averaged F1-score was adopted as the primary optimization
+criterion during hyperparameter tuning.
+
+The validation strategy was based on Stratified K-Fold Cross-Validation with $k = 5$
+folds \cite{arlot2010crossvalidation}. Stratification was applied to preserve the original class
+distribution within each fold, which is particularly important when class imbalance is present, as
+it ensures that every partition contains a representative proportion of each class and prevents
+evaluation splits from being unintentionally homogeneous \cite{faceli2011}. With 199 instances, a
+five-fold configuration yields training sets of approximately 159 examples and validation sets of
+approximately 40 examples per fold, a partitioning that balances estimation variance and
+computational feasibility for a dataset of this size. Identical stratified folds were reused across
+all classifier comparisons within each experimental stage, ensuring that differences in observed
+performance can be attributed to algorithmic choices rather than to variation in data partitioning.
+Together, these methodological choices are intended to maximize the reliability and
+reproducibility of the experimental results.
+
 \todo{
 \begin{itemize}
     \item Describe the overall machine learning approach adopted to address the problem, including
