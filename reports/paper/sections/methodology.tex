@@ -6,7 +6,7 @@ Each step is described in detail below.
 
 \subsection{Exploratory Data Analysis (EDA)}
 
-The dataset used is a widespread available dataset regarding Chronic Kidney Disease. It was downloaded from <ADD LINK HERE>.
+The dataset used is a widespread available dataset regarding Chronic Kidney Disease. \cite{risk_factor_prediction_of_chronic_kidney_disease_857}.
 Data was initially composed of 200 instances, with 29 attributes each.
 Following the exploratory data analysis and preprocessing practices described by Faceli et al. \cite{faceli2011}, the dataset
 distributions, attribute consistency, and feature characteristics were then analyzed before model training.
@@ -223,23 +223,68 @@ reproducibility of the experimental results.
 \end{itemize}
 }
 
+
 \subsection{Model Training, Hyperparameter Tuning, and Validation}
 
-\todo{
-\begin{itemize}
-    \item Describe how the selected models were trained according to the previously defined experimental setup.
-    \item Report whether an initial comparison of algorithms (e.g., spot-checking) was performed and describe its
-        purpose in guiding the selection of promising models.
-    \item Describe the hyperparameter tuning procedures applied to the selected models, including the search strategies used.
-    \item Explain how data separation was maintained throughout the training and validation process to avoid data leakage.
-    \item Describe how consistency across experiments was ensured, including the use of identical data partitions when
-        comparing different algorithms.
-    \item Report the use of repeated experiments or multiple runs, when applicable, to improve the reliability of
-        the obtained results.
-    \item Describe the steps taken to ensure reproducibility of the experiments, such as the use of fixed random seeds.
-    \item Summarize how model performance was recorded and organized for subsequent analysis.
-\end{itemize}
-}
+We adopted a workflow that would be able to compare hyperparameter optimization, preventing data leakage throughout the ML pipeline.
+As previously indicated, after comparing different models, Random Forest (RF) had the best performance overall, so the objective of this section is to explain the exploration around
+hyperparameter tunning and model validation. Similar staged evaluation methodologies
+have been widely recommended in the machine learning literature as an effective strategy for narrowing the search space and improving experimental
+efficiency \cite{hastie2009elements, kuhn2013applied}.
+
+Spot-checking focused on balancing strategies demonstrated that the absence of class
+balancing had superior average results for the dataset under study.
+The Principal Component Analysis (PCA) retaining 95\% of the explained variance had the best results and were nearly as good as not having any dimention reduction
+Consequently, the optimization experiments were restricted to two options: (i) no dimensionality reduction and (ii) PCA retaining 95\% of the variance.
+
+A pipeline with three steps was implemented. First using a \texttt{MinMaxScaler}, second an optional dimensionality reduction through PCA, and third classification using \texttt{RandomForestClassifier}.
+Pipeline-based experimentation ensured that all preprocessing transformations were consistently applied and
+ integrated into the validation workflow. The \texttt{MinMaxScaler} was defined using only training data, and then applied into validation data k-fold to avoid data leakage between training and testing subsets.
+  This procedure follows best practices recommended in the literature for avoiding optimistic bias in performance estimation \cite{kaufman2012leakage, scikit-learn}.
+
+Hyperparameter optimization was performed using both \texttt{GridSearchCV} and \texttt{RandomizedSearchCV}. Three search
+configurations were investigated: (i) a focused exhaustive grid search evaluating all parameter combinations, (ii) a broad randomized search exploring 
+wide hyperparameter distributions with 50 random samples, and (iii) a fine-tuned randomized search concentrating on narrower distributions around identified promising regions 
+with 30 sampled configurations. The optimized hyperparameters included the number of trees ( \texttt{n\_estimators} ), maximum tree depth (\texttt{max\_depth}), minimum samples required for
+node splitting (\texttt{min\_samples\_split}), minimum samples per leaf ( \texttt{min\_samples\_leaf} ), and the number of features considered at each split (\texttt{max\_features}). The use
+of randomized search as an efficient alternative to exhaustive search for high-dimensional hyperparameter spaces has been previously demonstrated by Bergstra and Bengio \cite{bergstra2012random}.
+
+It was used an outer loop using a stratified 5-fold cross-validation scheme for performance estimation,
+  while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent 
+  evaluation conditions for all configurations.
+
+To improve reproducibility and consistency, it was used a fixed random seed (\texttt{random\_state=42}), including Random Forest initialization, PCA transformations, 
+randomized hyperparameter searches, and cross-validation splitting.
+
+Model performance was systematically recorded using: Accuracy, Precision, Recall, and F1-score. For each configuration, performance statistics were 
+aggregated across outer folds and summarized using mean and standard deviation values Figure \ref{fig:optimize_rf_hyperparameters_ranking}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves 
+and distribution boxplots Figure \ref{fig:optimize_rf_hyperparameters_boxplot} illustrating fold-level performance consistency and ROC Figure \ref{fig:optimize_rf_hyperparameters_roc_curve}. All results
+  were consolidated into structured summary tables to facilitate comparative analysis and support the final selection of the most robust Random Forest configuration.
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/optimize_rf_hyperparameters_ranking.png}
+    \caption{Performance Table}
+    \label{fig:optimize_rf_hyperparameters_ranking}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/optimize_rf_hyperparameters_confusion_matrices.png}
+    \caption{Confusion Matrix}
+    \label{fig:optimize_rf_hyperparameters_confusion_matrices}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/optimize_rf_hyperparameters_boxplot.png}
+    \caption{BoxPlot}
+    \label{fig:optimize_rf_hyperparameters_boxplot}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/optimize_rf_hyperparameters_roc_curve.png}
+    \caption{ROC}
+    \label{fig:optimize_rf_hyperparameters_roc_curve}
+\end{figure}
+
 
 \subsection{Model Interpretation and Analysis}
 
