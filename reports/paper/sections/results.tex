@@ -4,10 +4,9 @@
 
 The initial model comparison evaluated KNN, Decision Tree, Random Forest, SVM,
 and Naive Bayes using stratified 5-fold cross-validation. The same
-preprocessing workflow was applied inside each fold to avoid data leakage. In
-this comparison, no dimensionality reduction and no balancing strategy were
-applied, matching the simpler configuration selected after the preprocessing
-experiments.
+preprocessing workflow was applied inside each fold to reduce the risk of data
+leakage. At this stage, no dimensionality-reduction or balancing strategy was
+applied, establishing a baseline for the subsequent preprocessing experiments.
 
 Random Forest obtained the best overall performance among the evaluated
 classifiers, with overall accuracy of 0.9950 and macro-F1 of 0.9945. Because
@@ -15,12 +14,16 @@ the encoded labels map \texttt{ckd} to 0 and \texttt{notckd} to 1, the
 class-wise metrics were reported explicitly instead of relying only on the
 default positive class used by scikit-learn. For CKD, Random Forest obtained
 precision of 0.9922, recall of 1.0000, and F1-score of 0.9961; for NOTCKD, it
-obtained precision of 1.0000, recall of 0.9861, and F1-score of 0.9930. SVM
-and Naive Bayes also performed well, but Random Forest showed the best balance
-between predictive performance and stability across folds.
-Table~\ref{tab:model_comparison} summarizes the main metrics, while
-Figure~\ref{fig:model_comparison_results} presents the F1-score distribution
-and ROC curves.
+obtained precision of 1.0000, recall of 0.9861, and F1-score of 0.9930.
+
+SVM and Naive Bayes also performed well, but Random Forest achieved the
+strongest overall metric profile. These results address the first objective of
+the study by showing that Random Forest was the best-performing classifier
+among the evaluated supervised learning models. For this reason, it was used as
+the reference model in the balancing, dimensionality-reduction, optimization,
+and interpretability stages. Table~\ref{tab:model_comparison} summarizes the
+main metrics, while Figure~\ref{fig:model_comparison_results} presents the
+F1-score distribution and ROC curves.
 
 \begin{table}[!htbp]
 \centering
@@ -88,15 +91,13 @@ Random Under Sampling & 0.9537 & 0.9014 & 0.9914 & 0.9416 \\
 
 Dimensionality-reduction experiments showed that PCA produced the strongest
 average performance across the evaluated models. PCA retaining 90\% of the
-variance achieved the best average F1-score across classifiers, while PCA
-retaining 95\% of the variance achieved the best Random Forest F1-score.
+variance achieved the best average F1-score across classifiers.
 
-For the final Random Forest configuration, however, the difference between PCA
-95\% and no dimensionality reduction was very small: 0.9935 versus 0.9926 in
-mean F1-score. This marginal gain was not considered sufficient to justify the
-additional computational cost or the loss of direct feature interpretability
-introduced by PCA. As a result, PCA was not adopted in the final selected
-model.
+For Random Forest, PCA retaining 95\% of the variance produced the highest mean
+F1-score. However, the difference from the no-dimensionality-reduction baseline
+was only 0.0009. Since this gain was very small and
+PCA reduces the direct traceability between model explanations and the original
+clinical variables, the final workflow kept the no-PCA configuration.
 
 \begin{table}[!htbp]
 \centering
@@ -142,18 +143,21 @@ Embedded LinearSVC & 0.9598 & 0.9217 & 0.9802 & 0.9475 \\
 
 The Random Forest classifier was further evaluated using default parameters,
 GridSearchCV, and RandomizedSearchCV under two preprocessing settings: no
-dimensionality reduction and PCA retaining 95\% of the variance. The best
-numerical result was obtained with PCA 95\% combined with either the baseline
-configuration or the focused grid search, both reaching mean F1-score of
-0.9935. The no-dimensionality-reduction baseline and grid-search
-configurations reached mean F1-score of 0.9926, with mean accuracy of 0.9949,
-mean precision of 1.0000, and mean recall of 0.9857.
+dimensionality reduction and PCA retaining 95\% of the variance. The default
+Random Forest configuration refers to the default parameters of the
+scikit-learn version used in the experiments.
+
+The tuning results showed that hyperparameter search did not provide a
+meaningful gain over the default Random Forest configuration. With PCA 95\%,
+GridSearchCV and the baseline configuration reached the same mean F1-score of
+0.9935. Without PCA, the baseline, GridSearchCV, and the fine RandomizedSearchCV
+configuration also reached the same mean F1-score of 0.9926.
 
 Because the performance difference between the best PCA-based configuration and
 the no-PCA Random Forest was only 0.0009 in mean F1-score, the final selected
 model was the default Random Forest without balancing and without PCA. This
 choice preserves near-identical predictive performance while avoiding the
-additional computational cost of PCA and hyperparameter search. It also keeps
+additional pipeline complexity of PCA and hyperparameter search. It also keeps
 the model easier to interpret using the original clinical attributes. The
 hyperparameter-tuning ranking is summarized in
 Table~\ref{tab:rf_hyperparameter_ranking}, and the supporting plots are shown
@@ -213,7 +217,7 @@ Global interpretation combined native Random Forest feature importance,
 permutation importance, and SHAP summaries. The resulting rankings highlighted
 hematological, renal-function, and urine-related variables as relevant features
 associated with model predictions. These rankings should be interpreted as
-model-dependent predictive evidence rather than causal clinical effects. The
+model-dependent predictive patterns rather than causal clinical effects. The
 most relevant variables included hematological indicators such as hemo, pcv,
 and rbcc; renal and urine-related attributes such as sg, grf, and al; and
 clinical indicators such as htn, dm, and bgr. These correspond to hemoglobin,

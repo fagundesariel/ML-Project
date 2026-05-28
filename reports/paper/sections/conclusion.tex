@@ -1,18 +1,55 @@
 \section{Conclusion}
 
-Regarding the exploration over Calancing Spot Checking, four different approaches were tested: No Ballancing, SMOTE, Random Under Sampler and SMOTE+TomekLinks.
-As initially said, the data without balancing effort was on a 64\%-36\% distribution, which is a faily even distribution. The three balancing technique results had minor impact on the model quality,
-proving data distribution is enough for proper ML modeling on the different models evaluated.
-The dimensionality reduction and feature selection experiments demonstrated that reducing the feature space can improve both model performance and stability.
-We've tried different types of dimention reduction and PCA achieved the best overall results. The wrapper-based selection showed slightly lower performance.
-Results indicate that dimensionality reduction contributed positively.
+This study evaluated machine learning models for Chronic Kidney Disease
+prediction through four stages: classifier comparison, preprocessing analysis,
+Random Forest hyperparameter tuning, and post-hoc interpretability. The results
+showed that Random Forest was the best-performing classifier among the evaluated
+models, reaching overall accuracy of 0.9950 and macro-F1 of 0.9945 under
+stratified cross-validation. It also achieved strong class-wise performance,
+with F1-score of 0.9961 for CKD and 0.9930 for NOTCKD.
 
-\todo{
-\begin{itemize}
-    \item Summarize the main objectives and outcomes of the study.
-    \item Highlight the best-performing models and the most relevant findings.
-    \item Discuss the practical implications of the results.
-    \item Identify limitations of the study.
-    \item Suggest possible improvements and directions for future work.
-\end{itemize}
-}
+The preprocessing experiments clarified how balancing and dimensionality
+reduction affected performance on this dataset. Class-balancing strategies did
+not improve the selected workflow, suggesting that, under the evaluated setup,
+the original class distribution did not prevent the models from achieving high
+predictive performance. Dimensionality reduction had a more nuanced effect: PCA
+improved the average performance in some experiments and produced the highest
+mean F1-score for Random Forest, but the gain over the no-PCA Random Forest was
+only 0.0009. Because this difference was small and PCA reduces the direct
+interpretability of the original clinical variables, the final workflow selected
+the default Random Forest without balancing and without PCA.
+
+The hyperparameter-optimization experiments showed no meaningful improvement
+from GridSearchCV or RandomizedSearchCV over the default Random Forest
+configuration. The best PCA-based GridSearchCV result matched the PCA-based
+baseline, while the no-PCA optimized configurations remained equivalent to the
+no-PCA baseline.
+
+This configuration kept predictive performance nearly unchanged while
+preserving a simpler workflow and explanations based on the original attributes.
+The interpretability analysis highlighted hematological, renal-function,
+urine-related, and clinical variables as relevant to model predictions,
+including hemo, pcv, sg, grf, al, rbcc, htn, dm, and bgr. These findings are
+consistent with clinically relevant CKD markers, but they should be interpreted
+as model-dependent predictive patterns rather than causal evidence.
+
+The main limitation of this study is the small dataset size, with 199 instances
+after cleaning. This restricts the ability to generalize the results to broader
+clinical populations and makes external validation especially important. In
+addition, the dataset contains range-encoded attributes rather than raw
+continuous measurements, which may limit the granularity of the learned
+patterns.
+
+Future work should evaluate the workflow on larger and more diverse CKD
+datasets and include external validation to assess generalization beyond the
+dataset used in this study. Additional experiments should investigate
+alternative preprocessing orders, especially applying dimensionality reduction
+before class-balancing techniques. This would make it possible to compare
+pipelines such as scaling followed by PCA and then SMOTE against pipelines that
+apply balancing before dimensionality reduction. These alternative orders should
+be evaluated within the cross-validation pipeline to avoid potential
+information leakage between training and validation folds. Further work should
+also consider different PCA variance thresholds, calibration and
+threshold-selection strategies, confidence intervals or statistical tests for
+small metric differences, and clinical review of the most relevant features
+identified by the interpretability methods.
