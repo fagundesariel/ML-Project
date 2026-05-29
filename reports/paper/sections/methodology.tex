@@ -23,19 +23,22 @@ Regarding the other attributes, we've splitted the analysis in two steps.
       Another interesting fact is that the 'pot' attribute has predominantly a single value, where 98.5\% of its values are "$<$7.31 ". This is an attribute that seems not to bring relevant information
        due to its distribution, and we should be intentional on its use.
 \end{itemize}
+
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{figures/numeric_distributions_histograms.png}
+    \includegraphics[width=0.75\linewidth]{figures/numeric_distributions_histograms.png}
     \caption{Numeric attributes distribution}
     \label{fig:numeric_distributions_histograms}
 \end{figure}
+
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{figures/categorical_distributions_barcharts.png}
+    \includegraphics[width=0.75\linewidth]{figures/categorical_distributions_barcharts.png}
     \caption{Categorical attributes distribution}
     \label{fig:categorical_distributions_barcharts}
 \end{figure}
 
+\FloatBarrier
 
 \subsection{Data Preprocessing}
 
@@ -198,41 +201,72 @@ node splitting (\texttt{min\_samples\_split}), minimum samples per leaf ( \textt
 of randomized search as an efficient alternative to exhaustive search for high-dimensional hyperparameter spaces has been previously demonstrated by Bergstra and Bengio \cite{bergstra2012random}.
 
 It was used an outer loop using a stratified 5-fold cross-validation scheme for performance estimation,
-  while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent
-  evaluation conditions for all configurations.
+while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent
+evaluation conditions for all configurations.
 
 To improve reproducibility and consistency, it was used a fixed random seed (\texttt{random\_state=42}), including Random Forest initialization, PCA transformations,
 randomized hyperparameter searches, and cross-validation splitting.
 
 Model performance was systematically recorded using: Accuracy, Precision, Recall, and F1-score. For each configuration, performance statistics were
-aggregated across outer folds and summarized using mean and standard deviation values Figure \ref{fig:optimize_rf_hyperparameters_ranking}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves
+aggregated across outer folds and summarized using mean and standard deviation values Table \ref{tab:results}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves
 and distribution boxplots Figure \ref{fig:optimize_rf_hyperparameters_boxplot} illustrating fold-level performance consistency and ROC Figure \ref{fig:optimize_rf_hyperparameters_roc_curve}. All results
-  were consolidated into structured summary tables to facilitate comparative analysis and support the final selection of the most robust Random Forest configuration.
-\begin{figure}
+were consolidated into structured summary tables to facilitate comparative analysis and support the final selection of the most robust Random Forest configuration.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\caption{Ranking of Random Forest configurations by performance metrics}
+\label{tab:results}
+\begin{tabular}{|p{2.2cm}|p{1.8cm}|p{2.2cm}|c|c|c|c|c|}
+\hline
+Configuration & Preprocessing & Search Configuration & f1 mean & f1 std & acc mean & precision mean & recall mean \\
+\hline
+PCA (95\% var)  $|$  Grid Search CV — focused grid & PCA (95\% var) & Grid Search CV — focused grid & 0.9935 & 0.0129 & 0.9950 & 0.9875 & 10000 \\
+\hline
+PCA (95\% var)  $|$  Baseline (default params) & PCA (95\% var) & Baseline (default params) & 0.9935 & 0.0129 & 0.9950 & 0.9875 & 10000 \\
+\hline
+No DR  $|$  Baseline (default params) & No DR & Baseline (default params) & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+No DR  $|$  Grid Search CV — focused grid & No DR & Grid Search CV — focused grid & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+No DR  $|$  Randomized Search CV — fine-tuned (n=30) & No DR & Randomized Search CV — fine-tuned (n=30) & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+PCA (95\% var)  $|$  Randomized Search CV — broad (n=50) & PCA (95\% var) & Randomized Search CV — broad (n=50) & 0.9867 & 0.0164 & 0.9900 & 0.9742 & 10000 \\
+\hline
+PCA (95\% var)  $|$  Randomized Search CV — fine-tuned (n=30) & PCA (95\% var) & Randomized Search CV — fine-tuned (n=30) & 0.9867 & 0.0164 & 0.9900 & 0.9742 & 10000 \\
+\hline
+No DR  $|$  Randomized Search CV — broad (n=50) & No DR & Randomized Search CV — broad (n=50) & 0.9861 & 0.0170 & 0.9899 & 0.9875 & 0.9857 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=1\linewidth]{figures/optimize_rf_hyperparameters_ranking.png}
-    \caption{Performance Table}
-    \label{fig:optimize_rf_hyperparameters_ranking}
-\end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{figures/optimize_rf_hyperparameters_confusion_matrices.png}
-    \caption{Confusion Matrix}
+    \includegraphics[width=0.52\linewidth]{figures/optimize_rf_hyperparameters_confusion_matrices.png}
+    \caption{Confusion Matrix.}
     \label{fig:optimize_rf_hyperparameters_confusion_matrices}
 \end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{figures/optimize_rf_hyperparameters_boxplot.png}
-    \caption{BoxPlot}
-    \label{fig:optimize_rf_hyperparameters_boxplot}
-\end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\linewidth]{figures/optimize_rf_hyperparameters_roc_curve.png}
-    \caption{ROC}
-    \label{fig:optimize_rf_hyperparameters_roc_curve}
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/optimize_rf_hyperparameters_boxplot.png}
+\caption{BoxPlot.}
+\label{fig:optimize_rf_hyperparameters_boxplot}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/optimize_rf_hyperparameters_roc_curve.png}
+\caption{ROC curve.}
+\label{fig:optimize_rf_hyperparameters_roc_curve}
+\end{subfigure}
+\caption{Random Forest hyperparameter optimization: fold-level consistency and ROC analysis.}
+\label{fig:optimize_rf_hyperparameters_boxplot_roc}
 \end{figure}
 
+\FloatBarrier
 
 \subsection{Model Interpretation and Analysis}
 
