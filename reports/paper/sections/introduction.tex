@@ -1,13 +1,52 @@
 \section{Introduction}
 
-\todo{
-\begin{itemize}
-    \item Present the context of the problem and explain its practical relevance.
-    \item Provide background information necessary to understand the problem domain.
-    \item Briefly review related work or existing approaches to similar problems.
-    \item Clearly define the problem being addressed.
-    \item State the main objectives of the study.
-    \item Highlight the expected contributions of the work.
-\end{itemize}
-}
+Chronic Kidney Disease (CKD) represents a significant public health challenge
+characterized by the progressive loss of renal function. Early identification of
+individuals at risk is essential for timely intervention and improved clinical
+outcomes. In recent years, machine learning approaches have emerged as promising
+tools for supporting disease prediction tasks through the analysis of structured
+clinical and laboratory data. Supervised classification methods, in particular,
+have demonstrated strong potential for identifying patterns associated with
+chronic diseases and supporting data-driven healthcare analysis
+\cite{obermeyer2016,deo2015}.
 
+The development of reliable predictive models for CKD involves multiple stages
+of the machine learning workflow, including exploratory data analysis,
+preprocessing, model selection, hyperparameter optimization, and model
+interpretation. In clinical datasets, preprocessing techniques such as class
+balancing and dimensionality reduction are frequently employed to address issues
+including class imbalance, noisy attributes, and feature redundancy
+\cite{he2009imbalanced,chawla2002smote}.
+Additionally, robust evaluation strategies are necessary to ensure fair model
+comparison and reproducibility of experimental results.
+
+Prior work has demonstrated the applicability of machine learning to CKD
+prediction using the same dataset adopted in this study. Islam et al.
+\cite{inproceedings} evaluated Naive Bayes, Random Forest, Logistic Regression,
+Decision Stump, and Linear Regression models for CKD risk factor prediction,
+establishing a baseline for algorithm comparison on this data. Building on this
+prior work, the present study extends the evaluation to a broader set of
+algorithms, including Support Vector Machines (SVM) and K-Nearest Neighbors
+(KNN), and incorporates class balancing and dimensionality reduction strategies
+not explored in that work. Furthermore, explainability methods such as SHAP and
+LIME have gained importance in healthcare-related applications by improving
+transparency and supporting interpretation of model behavior.
+
+In this context, this work investigates the impact of different preprocessing
+and model optimization strategies on CKD prediction using the UCI Chronic Kidney
+Disease dataset \cite{risk_factor_prediction_of_chronic_kidney_disease_857}. The
+proposed workflow includes exploratory data analysis, evaluation of multiple
+classification algorithms, application of balancing and dimensionality reduction
+techniques, hyperparameter optimization using nested cross-validation, and
+interpretability analysis of the final model. Experiments were conducted using
+Stratified 5-Fold Cross-Validation to ensure consistent evaluation conditions.
+
+The main objectives of this study are: (i) to compare the predictive performance
+of different supervised learning algorithms for CKD prediction; (ii) to evaluate
+the impact of class balancing and dimensionality reduction techniques on model
+performance; (iii) to investigate hyperparameter optimization strategies for the
+best-performing model; and (iv) to analyze model interpretability using feature
+importance, permutation importance, SHAP, and LIME. Together, these objectives
+aim to contribute a reproducible experimental framework for CKD classification
+that pairs rigorous comparative evaluation of diverse supervised learning
+algorithms with transparent post-hoc model interpretation.

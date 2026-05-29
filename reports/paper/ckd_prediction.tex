@@ -6,17 +6,14 @@
 \usepackage{placeins}
 \usepackage{subcaption}
 \usepackage[utf8]{inputenc}
-\usepackage[brazil]{babel}
-
-%\newcommand{\todo}[1]{} % Uncomment this line to hide TODO notes
-\newcommand{\todo}[1]{\textcolor{red}{#1}} % TODO notes will be shown in red
+\usepackage[english]{babel}
 
 
 \sloppy
 
 \title{Developing and Evaluating Predictive Models for Chronic Kidney Disease Detection}
 
-\author{Ariel M. Fagundes\inst{1}, Rodrigo\inst{1}, Anderson\inst{1} }
+\author{Ariel M. Fagundes\inst{1}, Rodrigo Mancuso\inst{1}, Anderson Gonçalves\inst{1} }
 
 \address{Instituto de Informática -- Universidade Federal do Rio Grande do Sul
   (UFRGS)\\
@@ -29,30 +26,17 @@
 \maketitle
 
 \begin{abstract}
-\todo{
-\begin{itemize}
-    \item Briefly introduce the problem being addressed and its practical relevance.
-    \item State the main objective of the study.
-    \item Summarize the dataset used and the general machine learning approach adopted.
-    \item Mention the main algorithms or techniques applied.
-    \item Present the most important results, including the best model performance using the primary evaluation metric.
-    \item Highlight the main contribution or insight obtained from the study.
-\end{itemize}
-}
-\end{abstract}
 
-\begin{resumo}
-\todo{
-\begin{itemize}
-    \item Apresentar brevemente o problema abordado e sua relevância prática.
-    \item Definir o objetivo principal do estudo.
-    \item Resumir o conjunto de dados utilizado e a abordagem geral de aprendizado de máquina adotada.
-    \item Mencionar os principais algoritmos ou técnicas utilizadas.
-    \item Apresentar os resultados mais relevantes, incluindo o desempenho do melhor modelo utilizando a métrica principal.
-    \item Destacar a principal contribuição ou insight obtido com o estudo.
-\end{itemize}
-}
-\end{resumo}
+Chronic Kidney Disease (CKD) is a relevant public health problem in which early diagnosis may
+improve patient outcomes. This work evaluates machine learning models for CKD prediction using the
+UCI CKD dataset \cite{risk_factor_prediction_of_chronic_kidney_disease_857}. Random Forest, SVM,
+KNN, Naive Bayes, and Decision Tree were evaluated with balancing and dimensionality reduction
+techniques, including SMOTE, Random Under Sampling, SMOTE + Tomek Links, PCA, SelectKBest,
+SelectFromModel, and RFECV. Models were assessed using accuracy, precision, recall, and F1-score.
+The best-performing model was further analyzed using explainability and interpretability techniques
+to provide insights into the decision-making process and feature importance for CKD prediction.
+
+\end{abstract}
 
 % ===== Sections =====
 
@@ -66,9 +50,6 @@
 
 % ===== References =====
 \section{References}
-
-\cite{uci_ckd}
-
 \bibliographystyle{sbc}
 \bibliography{references}
 

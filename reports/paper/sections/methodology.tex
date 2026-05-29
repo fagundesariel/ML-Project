@@ -6,81 +6,267 @@ Each step is described in detail below.
 
 \subsection{Exploratory Data Analysis (EDA)}
 
-\todo{
+The dataset used is a widespread available dataset regarding Chronic Kidney Disease \cite{risk_factor_prediction_of_chronic_kidney_disease_857}.
+Data was initially composed of 200 instances, with 29 attributes each (including the target variable).
+Following the exploratory data analysis and preprocessing practices described by Faceli et al. \cite{faceli2011}, the dataset
+distributions, attribute consistency, and feature characteristics were then analyzed before model training.
+It was found that two of those attributes ('affected' and 'stage') were part of a previous ML study and could represent data leakage, thus they were deleted. Specifically, the 'affected' attribute was a mirror of the target class and therefore represented data leakage. The 'stage' attribute was removed because it contains information posterior to the diagnosis, thus also representing data leakage. There was also one single instance where column 'grf' had a value "p" instead of a range. As it was a single instance and that value did not make any sense, that instance was discarded. This value "p" potentially represented a masked missing value.
+That left us with 199 Instances, and 27 attributes each (including the target variable). By checking a few instances manually, both Categorical and numerical values were found.
+By running some simple commands we've verified that our dataset was complete, i.e. there was no missing values we'd have to deal with.
+Our target variable is called "Class" which values could be CKD and NOTCKD, where CKD was indicating that the patient was diagnosed as having a Cronic Kidney Disease, and NOTCKD as patient not having it. There were 127 instances classified as CKD and 72 classified as NOTCKD, corresponding to an approximate 64\%–36\% class distribution. This level of imbalance is relatively moderate and is not expected to significantly affect model performance.
+Regarding the other attributes, we've splitted the analysis in two steps.
 \begin{itemize}
-    \item Describe the main characteristics of the dataset, including the number of instances, number
-        and types of attributes, and the definition of the target variable.
-    \item Present the distribution of the target attribute and discuss possible class imbalance issues.
-    \item Report the presence of patterns, anomalies, or inconsistencies observed in the dataset, such
-        as outliers, missing values, duplicated records, or irregular values.
-    \item Present visualizations and statistical summaries used to support the exploratory analysis
-        (e.g., histograms, boxplots, correlation matrices, descriptive statistics).
-    \item Discuss relationships between attributes and identify possible redundant or highly correlated features.
-    \item Highlight attributes or instances that were identified as potentially irrelevant, redundant, or problematic.
-    \item Summarize the main findings obtained from the exploratory analysis.
-    \item Based on these findings, describe the data quality issues identified and motivate the preprocessing steps
-        required for data preparation.
+    \item  Plotting the numerical value distributions for attributes: 'bp (Diastolic)', 'bp limit', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane'. As it can be seen in Figure ~\ref{fig:numeric_distributions_histograms}, all attributes show reasonable data distribution.
+    \item Plotting the Categorical value distributions for attributes: 'sg', 'al', 'class', 'su', 'bgr', 'bu', 'sod', 'sc', 'pot', 'hemo', 'pcv', 'rbcc', 'wbcc', 'grf', 'age'. Some interesting findings
+    can be seen in the data shown in Figure \ref{fig:categorical_distributions_barcharts}. The categorical attributes are actually ranges, thus in reality, the distinct values on the attributes mean
+     in fact numerical values within a range. This means that outlier values within each attribute does not exist, since all high values are represented as being bigger than a threshold.
+      Another interesting fact is that the 'pot' attribute has predominantly a single value, where 98.5\% of its values are "$<$7.31 ". This is an attribute that seems not to bring relevant information
+       due to its distribution, and we should be intentional on its use.
 \end{itemize}
-}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{figures/numeric_distributions_histograms.png}
+    \caption{Numeric attributes distribution}
+    \label{fig:numeric_distributions_histograms}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{figures/categorical_distributions_barcharts.png}
+    \caption{Categorical attributes distribution}
+    \label{fig:categorical_distributions_barcharts}
+\end{figure}
+
+\FloatBarrier
 
 \subsection{Data Preprocessing}
 
-\todo{
-\begin{itemize}
-    \item Describe the preprocessing steps applied to the dataset based on the issues identified during the
-        exploratory data analysis.
-    \item Explain the criteria used to remove or modify attributes or instances considered
-        irrelevant, redundant, or inconsistent.
-    \item Describe how missing values were handled and justify the chosen strategy.
-    \item Report how outliers were treated and explain the reasoning behind the adopted approach.
-    \item Describe any normalization or standardization procedures applied to numerical attributes.
-    \item Explain how categorical variables were encoded and justify the selected encoding method.
-    \item Describe any techniques used to address class imbalance, when applicable.
-    \item Report the use of dimensionality reduction or feature selection methods, if applied,
-        including the criteria used.
-    \item Explain how preprocessing steps were incorporated into the modeling workflow.
-    \item If no preprocessing was required, explicitly state this and justify the decision based on the data analysis.
-\end{itemize}
-}
+As informed above, even before data exploration, two attributes (Affected and Stage) were removed and one single instance was deleted.
+We've also took the decision of converting the categorical ranges into numerical values. Transforming range-based categories into numerical values is a
+good choice because it preserves the natural ordering and approximate magnitude of the original data, allowing machine learning algorithms to interpret
+the feature quantitatively rather than as unrelated text categories. This helps models identify meaningful patterns, relationships, and distances between
+values while avoiding the loss of ordinal information that would occur with purely categorical encoding methods such as one-hot encoding.
+So, for instance, the attribute 'pot', which distinct values were: "$<$ 7.31", "7.31 - 11.72", "38.18 - 42.59" and "$\geq$ 42.59" were converted, respectively,
+into 7.31, 9.515, 40.385 and 42.59.
+The final attribute to be encoded was the target attribute: Class. CKD was converted to 1 and NOTCKD to 0.
+At this point, all attributes were properly converted to numerical values, and are ready to be normalized. As methods like k-fold cross-validation are expected,
+we've did not normalized the data at this step, pre-processing was implemented into the modeling workflow within each iteration instead to allow proper normalization and avoid data leakage.
+
 
 \subsection{Definition of the Approach, Algorithms, and Evaluation Strategy}
 
-\todo{
-\begin{itemize}
-    \item Describe the overall machine learning approach adopted to address the problem, including
-        the type of learning task (e.g., classification or regression).
-    \item Present the set of supervised learning algorithms selected for the study and justify their
-        inclusion based on their characteristics and suitability for the problem.
-    \item Highlight the diversity of the selected algorithms in terms of modeling strategies or inductive biases.
-    \item Describe the performance evaluation metrics used to assess model performance, explaining
-        their relevance to the problem context.
-    \item Indicate the primary metric used as the main criterion for model selection and optimization,
-        and justify this choice.
-    \item Describe the strategy used to divide the dataset into training, validation, and testing subsets.
-    \item Explain the evaluation methodology adopted (e.g., holdout validation or cross-validation),
-        including how it contributes to reliable model assessment.
-    \item Justify the methodological choices made in this stage based on best practices or characteristics
-        of the dataset and problem.
-\end{itemize}
-}
+The problem addressed in this study is formulated as a binary supervised classification task, in
+which each instance must be assigned to one of two mutually exclusive categories: CKD (positive
+class) or NOTCKD (negative class). The dataset employed is the Risk Factor Prediction of Chronic
+Kidney Disease \cite{risk_factor_prediction_of_chronic_kidney_disease_857}, made available through
+the UCI Machine Learning Repository. Following the preprocessing steps described in the preceding
+section, the working dataset comprises 199 instances and 27 attributes, with a class distribution
+of approximately 63.8\% CKD cases and 36.2\% NOTCKD cases. Although this degree of imbalance is
+moderate and not expected to substantially compromise classification in general, it was treated as a
+methodological question in its own right: certain algorithms are known to be sensitive to class
+frequencies even at relatively mild imbalance ratios, and such sensitivity may interact with the
+choice of evaluation metric in non-trivial ways \cite{he2009imbalanced}. The potential influence of
+class distribution on model behaviour was therefore empirically assessed as an explicit experimental
+stage rather than assumed negligible a priori.
+
+All preprocessing and feature transformation steps were encapsulated within a unified
+\texttt{Pipeline} provided by Scikit-Learn \cite{pedregosa2011sklearn}. The pipeline structure
+enforced a strict separation between training and validation data throughout every
+cross-validation fold: the encoding of range-based categorical variables as midpoint numerical
+values, as well as the min-max normalization applied to all features, were fitted exclusively on
+the training partition of each fold and then applied to the corresponding validation partition.
+This design choice structurally prevents data leakage, as no information from validation instances
+is allowed to influence the transformation parameters \cite{faceli2011}. Reproducibility across
+all experiments was further ensured by fixing the \texttt{random\_state} seed in every stochastic
+component of the pipeline.
+
+Five supervised learning algorithms were selected to cover a deliberately broad and methodologically
+diverse range of inductive biases, learning strategies, and complexity profiles, following the
+taxonomy discussed by Faceli et al.~\cite{faceli2011}. Random Forest \cite{breiman2001randomforests}
+is an ensemble method that constructs multiple decision trees over bootstrap samples of the training
+data and aggregates their predictions through majority voting. Its robustness to noise, capacity to
+handle high-dimensional input spaces, and built-in mechanism for estimating feature importance make
+it a well-suited candidate for medical classification tasks \cite{deo2015}. Support Vector
+Machine \cite{cortesvapnik1995} identifies a maximum-margin separating hyperplane in a
+kernel-induced feature space; its strong theoretical foundations and demonstrated empirical
+effectiveness in binary classification scenarios motivate its inclusion. K-Nearest
+Neighbors \cite{cover1967nearest} adopts an instance-based, non-parametric inductive bias,
+assigning class labels according to the majority class among the $k$ most geometrically proximate
+training instances. Its sensitivity to local structures in the feature space provides a meaningful
+contrast to the global model-based approaches. Naive Bayes relies on the assumption of conditional
+feature independence given the class label, offering a probabilistic generative perspective that is
+both computationally efficient and intrinsically transparent \cite{faceli2011,mitchell1997}. Finally,
+the Decision Tree algorithm \cite{quinlan1986} constructs explicit, rule-based representations of the
+decision surface, combining strong interpretability with the capacity to capture non-linear feature
+interactions. Taken together, these five algorithms represent distinct families of learning
+hypotheses - ensemble, margin-based, distance-based, probabilistic, and rule-based - providing a
+principled basis for comparative evaluation across diverse modelling strategies.
+
+The experimental workflow was structured in six progressive stages, each designed to narrow the
+space of modeling decisions before a final configuration was committed. In the first stage, all
+five classifiers were evaluated under four class-resampling strategies: no resampling, SMOTE
+\cite{chawla2002smote}, Random Under-Sampling, and the combination of SMOTE with Tomek Links
+\cite{tomek1976}. Despite the dataset's moderate imbalance, this evaluation was performed to
+empirically verify whether any resampling strategy yielded consistent and meaningful performance
+improvements across the classifier portfolio \cite{he2009imbalanced}. The results indicated that
+gains from resampling were marginal and inconsistent across models, not warranting the additional
+complexity; the no-resampling configuration was therefore adopted as the baseline condition for all
+subsequent stages.
+
+In the second stage, four dimensionality reduction and feature selection strategies were applied to
+all classifiers under the no-resampling baseline: Principal Component Analysis (PCA),
+SelectKBest, SelectFromModel, and Recursive Feature Elimination with Cross-Validation (RFECV).
+PCA retaining 90\% of the cumulative explained variance achieved the best average performance
+across classifiers and was adopted as the reference configuration for the third stage. The third
+stage compared all five classifiers under the combined configuration of no resampling and PCA
+(90\% variance), with Random Forest consistently achieving the best performance and being selected
+for focused investigation in subsequent stages. Stages four and five revisited, specifically for
+Random Forest, the effects of resampling strategies and alternative dimensionality reduction
+configurations. These targeted reassessments confirmed that no resampling remained superior and further identified
+PCA retaining 95\% of the explained variance as the best-performing dimensionality reduction
+configuration for this particular model.
+
+In the sixth stage, hyperparameter optimization was conducted across both preprocessing variants
+identified in prior stages - the no-dimensionality-reduction baseline and PCA (95\% variance) -
+using GridSearchCV with a focused search grid and two variants of
+RandomizedSearchCV \cite{bergstrabengio2012}: one sampling broadly from wide parameter
+distributions and one refining the search around more promising regions. The combination of
+exhaustive and stochastic search strategies reflects a principled trade-off: grid search provides
+systematic coverage of well-defined parameter ranges, while random search is statistically more
+efficient when the parameter space is large and the regions of interest are not known a
+priori \cite{bergstrabengio2012}. All optimization experiments were evaluated within a Nested
+Cross-Validation framework \cite{cawley2010overfitting}, using macro-averaged F1-score as the
+optimization criterion. The outer loop provides a performance estimate decoupled from the inner
+model selection procedure, thereby mitigating the optimistic bias that arises when the same data
+partitions are used for both tuning and evaluation \cite{cawley2010overfitting}. The results
+indicated that, while configurations combining PCA (95\% variance) with tuned hyperparameters
+achieved the highest observed F1 scores, the performance difference relative to the
+no-dimensionality-reduction baseline with default parameters was marginal and insufficient to
+justify the computational overhead of applying PCA. Accordingly, the final model adopted was the
+baseline Random Forest with no resampling, no dimensionality reduction, and the default
+Scikit-Learn hyperparameters, prioritizing simplicity, reproducibility, and a lower risk of
+overfitting over negligible performance differences.
+
+Model performance was assessed using four complementary metrics: accuracy, precision, recall, and
+F1-score \cite{faceli2011}. In clinical classification contexts, accuracy alone is an insufficient
+indicator of model quality when the costs associated with different error types are asymmetric. A
+false negative outcome - in which a patient with CKD is predicted as healthy - may carry
+substantially more serious clinical consequences than a false positive \cite{obermeyer2016,deo2015}.
+Precision quantifies the proportion of positive predictions that are correct, whereas recall
+measures the fraction of actual positive cases that are correctly identified. F1-score, defined as
+the harmonic mean of precision and recall, provides a balanced aggregate that penalizes extreme
+trade-offs between the two quantities. All metrics were computed in macro-averaged form to ensure
+that both classes received equal weight in the evaluation, irrespective of their relative
+frequencies. For the same reasons, macro-averaged F1-score was adopted as the primary optimization
+criterion during hyperparameter tuning.
+
+The validation strategy was based on Stratified K-Fold Cross-Validation with $k = 5$
+folds \cite{arlot2010crossvalidation}. Stratification was applied to preserve the original class
+distribution within each fold, which is particularly important when class imbalance is present, as
+it ensures that every partition contains a representative proportion of each class and prevents
+evaluation splits from being unintentionally homogeneous \cite{faceli2011}. With 199 instances, a
+five-fold configuration yields training sets of approximately 159 examples and validation sets of
+approximately 40 examples per fold, a partitioning that balances estimation variance and
+computational feasibility for a dataset of this size. Identical stratified folds were reused across
+all classifier comparisons within each experimental stage, ensuring that differences in observed
+performance can be attributed to algorithmic choices rather than to variation in data partitioning.
+Together, these methodological choices are intended to maximize the reliability and
+reproducibility of the experimental results.
+
 
 \subsection{Model Training, Hyperparameter Tuning, and Validation}
 
-\todo{
-\begin{itemize}
-    \item Describe how the selected models were trained according to the previously defined experimental setup.
-    \item Report whether an initial comparison of algorithms (e.g., spot-checking) was performed and describe its
-        purpose in guiding the selection of promising models.
-    \item Describe the hyperparameter tuning procedures applied to the selected models, including the search strategies used.
-    \item Explain how data separation was maintained throughout the training and validation process to avoid data leakage.
-    \item Describe how consistency across experiments was ensured, including the use of identical data partitions when
-        comparing different algorithms.
-    \item Report the use of repeated experiments or multiple runs, when applicable, to improve the reliability of
-        the obtained results.
-    \item Describe the steps taken to ensure reproducibility of the experiments, such as the use of fixed random seeds.
-    \item Summarize how model performance was recorded and organized for subsequent analysis.
-\end{itemize}
-}
+We adopted a workflow that would be able to compare hyperparameter optimization, preventing data leakage throughout the ML pipeline.
+As previously indicated, after comparing different models, Random Forest (RF) had the best performance overall, so the objective of this section is to explain the exploration around
+hyperparameter tunning and model validation. Similar staged evaluation methodologies
+have been widely recommended in the machine learning literature as an effective strategy for narrowing the search space and improving experimental
+efficiency \cite{hastie2009elements, kuhn2013applied}.
+
+Spot-checking focused on balancing strategies demonstrated that the absence of class
+balancing had superior average results for the dataset under study.
+The Principal Component Analysis (PCA) retaining 95\% of the explained variance had the best results and were nearly as good as not having any dimention reduction
+Consequently, the optimization experiments were restricted to two options: (i) no dimensionality reduction and (ii) PCA retaining 95\% of the variance.
+
+A pipeline with three steps was implemented. First using a \texttt{MinMaxScaler}, second an optional dimensionality reduction through PCA, and third classification using \texttt{RandomForestClassifier}.
+Pipeline-based experimentation ensured that all preprocessing transformations were consistently applied and
+ integrated into the validation workflow. The \texttt{MinMaxScaler} was defined using only training data, and then applied into validation data k-fold to avoid data leakage between training and testing subsets.
+  This procedure follows best practices recommended in the literature for avoiding optimistic bias in performance estimation \cite{kaufman2012leakage, scikit-learn}.
+
+Hyperparameter optimization was performed using both \texttt{GridSearchCV} and \texttt{RandomizedSearchCV}. Three search
+configurations were investigated: (i) a focused exhaustive grid search evaluating all parameter combinations, (ii) a broad randomized search exploring
+wide hyperparameter distributions with 50 random samples, and (iii) a fine-tuned randomized search concentrating on narrower distributions around identified promising regions
+with 30 sampled configurations. The optimized hyperparameters included the number of trees ( \texttt{n\_estimators} ), maximum tree depth (\texttt{max\_depth}), minimum samples required for
+node splitting (\texttt{min\_samples\_split}), minimum samples per leaf ( \texttt{min\_samples\_leaf} ), and the number of features considered at each split (\texttt{max\_features}). The use
+of randomized search as an efficient alternative to exhaustive search for high-dimensional hyperparameter spaces has been previously demonstrated by Bergstra and Bengio \cite{bergstra2012random}.
+
+It was used an outer loop using a stratified 5-fold cross-validation scheme for performance estimation,
+while the inner loop used stratified 3-fold cross-validation for hyperparameter selection. Stratification preserved the original class distribution across all folds, ensuring consistent
+evaluation conditions for all configurations.
+
+To improve reproducibility and consistency, it was used a fixed random seed (\texttt{random\_state=42}), including Random Forest initialization, PCA transformations,
+randomized hyperparameter searches, and cross-validation splitting.
+
+Model performance was systematically recorded using: Accuracy, Precision, Recall, and F1-score. For each configuration, performance statistics were
+aggregated across outer folds and summarized using mean and standard deviation values Table \ref{tab:results}. Additional analyses included confusion matrices (Figure \ref{fig:optimize_rf_hyperparameters_confusion_matrices}) aggregated over all outer folds, ROC curves
+and distribution boxplots Figure \ref{fig:optimize_rf_hyperparameters_boxplot} illustrating fold-level performance consistency and ROC Figure \ref{fig:optimize_rf_hyperparameters_roc_curve}. All results
+were consolidated into structured summary tables to facilitate comparative analysis and support the final selection of the most robust Random Forest configuration.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\caption{Ranking of Random Forest configurations by performance metrics}
+\label{tab:results}
+\begin{tabular}{|p{2.2cm}|p{1.8cm}|p{2.2cm}|c|c|c|c|c|}
+\hline
+Configuration & Preprocessing & Search Configuration & f1 mean & f1 std & acc mean & precision mean & recall mean \\
+\hline
+PCA (95\% var)  $|$  Grid Search CV — focused grid & PCA (95\% var) & Grid Search CV — focused grid & 0.9935 & 0.0129 & 0.9950 & 0.9875 & 10000 \\
+\hline
+PCA (95\% var)  $|$  Baseline (default params) & PCA (95\% var) & Baseline (default params) & 0.9935 & 0.0129 & 0.9950 & 0.9875 & 10000 \\
+\hline
+No DR  $|$  Baseline (default params) & No DR & Baseline (default params) & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+No DR  $|$  Grid Search CV — focused grid & No DR & Grid Search CV — focused grid & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+No DR  $|$  Randomized Search CV — fine-tuned (n=30) & No DR & Randomized Search CV — fine-tuned (n=30) & 0.9926 & 0.0148 & 0.9949 & 10000 & 0.9857 \\
+\hline
+PCA (95\% var)  $|$  Randomized Search CV — broad (n=50) & PCA (95\% var) & Randomized Search CV — broad (n=50) & 0.9867 & 0.0164 & 0.9900 & 0.9742 & 10000 \\
+\hline
+PCA (95\% var)  $|$  Randomized Search CV — fine-tuned (n=30) & PCA (95\% var) & Randomized Search CV — fine-tuned (n=30) & 0.9867 & 0.0164 & 0.9900 & 0.9742 & 10000 \\
+\hline
+No DR  $|$  Randomized Search CV — broad (n=50) & No DR & Randomized Search CV — broad (n=50) & 0.9861 & 0.0170 & 0.9899 & 0.9875 & 0.9857 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.52\linewidth]{figures/optimize_rf_hyperparameters_confusion_matrices.png}
+    \caption{Confusion Matrix.}
+    \label{fig:optimize_rf_hyperparameters_confusion_matrices}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/optimize_rf_hyperparameters_boxplot.png}
+\caption{BoxPlot.}
+\label{fig:optimize_rf_hyperparameters_boxplot}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/optimize_rf_hyperparameters_roc_curve.png}
+\caption{ROC curve.}
+\label{fig:optimize_rf_hyperparameters_roc_curve}
+\end{subfigure}
+\caption{Random Forest hyperparameter optimization: fold-level consistency and ROC analysis.}
+\label{fig:optimize_rf_hyperparameters_boxplot_roc}
+\end{figure}
+
+\FloatBarrier
 
 \subsection{Model Interpretation and Analysis}
 
@@ -102,4 +288,4 @@ with respect to the configured explained class, \texttt{ckd}; positive SHAP
 values indicate increased support for that class, whereas negative SHAP values
 indicate reduced support for that class. These explanations were treated as
 model-dependent interpretability evidence and not as causal clinical
-conclusions \cite{molnar2022interpretable,doshivelez2017interpretable}.
+conclusions \cite{molnar2025interpretable,doshivelez2017interpretable}.
